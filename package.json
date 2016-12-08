@@ -2,8 +2,10 @@
   "name": "weatherplane.com",
   "version": "1.0.0",
   "description": "WIP",
-  "main": "app.js",
-  "dependencies": {},
+  "main": "src/app.js",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
