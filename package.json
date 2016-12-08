@@ -1,0 +1,24 @@
+{
+  "name": "weatherplane.com",
+  "version": "1.0.0",
+  "description": "WIP",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivan-pik/weatherplane.git"
+  },
+  "keywords": [
+    "WIP"
+  ],
+  "author": "Ivan Pik (www.ivanpik.co.uk)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ivan-pik/weatherplane/issues"
+  },
+  "homepage": "https://github.com/ivan-pik/weatherplane#readme"
+}
