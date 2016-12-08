@@ -1,12 +1,14 @@
 'use strict';
 
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
+
+app.set('view engine', 'twig');
 
 app.get('/', function (req, res) {
-  res.send('hello world')
+  res.render('layout', {"greeting": "Hello!"});
 })
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port 3000!');
 })
