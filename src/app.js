@@ -1,12 +1,14 @@
 'use strict';
 
+var settings = require('./settings.json')
 var express = require('express');
 var app = express();
 
-app.set('view engine', 'twig');
+app.set('view engine', 'pug');
 
 app.get('/', function (req, res) {
-  res.render('layout', {"greeting": "Hello!"});
+  let title = settings.frontend.appName + ' | ' + settings.frontend.appNote;
+  res.render(__dirname + '/views/layout', {"greeting": "Hello!", "title": title});
 })
 
 app.listen(80, function () {
