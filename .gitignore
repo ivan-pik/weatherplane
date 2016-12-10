@@ -1,3 +1,8 @@
+# Env specific files
+src/envSettings.json
+
+
+
 # Logs
 logs
 *.log
