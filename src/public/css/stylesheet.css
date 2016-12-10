@@ -1,6 +1,24 @@
+html, body {
+  height: 100%; }
+
 body {
-  font-family: monospace;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #7ac44d;
+  /* IE9, iOS 3.2+ */
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxyYWRpYWxHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIwJSIgY3k9IjEwMCUiIHI9IjE0MS40MjEzNTYyMzczMDk1JSI+PHN0b3Agc3RvcC1jb2xvcj0iI2YzZWYxNSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjMDA5ODg1IiBzdG9wLW9wYWNpdHk9IjEiIG9mZnNldD0iMSIvPjwvcmFkaWFsR3JhZGllbnQ+PHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI3ZzZ2cpIiAvPjwvc3ZnPg==);
+  /* Android 2.3- hack (needed for the actual radial gradient) */
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxIDEiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxyYWRpYWxHcmFkaWVudCBpZD0idnNnZyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGN4PSIwJSIgY3k9IjEwMCUiIHI9IjE0MS40MjEzNTYyMzczMDk1JSI+PHN0b3Agc3RvcC1jb2xvcj0iI2YzZWYxNSIgc3RvcC1vcGFjaXR5PSIxIiBvZmZzZXQ9IjAiLz48c3RvcCBzdG9wLWNvbG9yPSIjMDA5ODg1IiBzdG9wLW9wYWNpdHk9IjEiIG9mZnNldD0iMSIvPjwvcmFkaWFsR3JhZGllbnQ+PHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI3ZzZ2cpIiAvPjwvc3ZnPg==), -webkit-gradient(radial, left bottom, 0, left bottom, 723, color-stop(0, #f3ef15), color-stop(1, #009885));
+  /* Android 2.3 */
+  background-image: -webkit-repeating-radial-gradient(left bottom, ellipse farthest-corner, #f3ef15 0%, #009885 100%);
+  /* IE10+ */
+  background-image: repeating-radial-gradient(ellipse farthest-corner at left bottom, #f3ef15 0%, #009885 100%);
+  background-image: -ms-repeating-radial-gradient(left bottom, ellipse farthest-corner, #f3ef15 0%, #009885 100%);
+  height: 500px; }
+
+.greeting {
+  font-size: 3em;
+  margin-bottom: 2em;
   color: #fff;
-  background-color: blue;
-  font-size: 18px;
-}
+  font-family: 'Farsan'; }
