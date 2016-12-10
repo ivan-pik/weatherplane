@@ -3,7 +3,7 @@ extends layout.pug
 block content
   h1.greeting #{greeting}
 
-  .panel.panel-default
+  .add-greeting.panel.panel-default
     .panel-heading
       h2.panel-title Add your own greeting
 
@@ -31,3 +31,8 @@ block content
           type='submit'
           value='Add'
         )
+
+  .lastest-greetings
+    h4 Latest greetings
+    each content in latestGreetings
+      p= content

@@ -1,6 +1,9 @@
 # Env specific files
 src/envSettings.json
 
+# SASS cache
+.sass-cache/*
+
 
 
 # Logs

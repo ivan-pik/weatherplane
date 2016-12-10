@@ -48,6 +48,8 @@ app.get('/', function (req, res) {
   var title = settings.frontend.appName + ' | ' + settings.frontend.appNote;
   res.locals.title = title;
 
+  var latestMessageFetched = false;
+
   db.collection('greetings').find().limit(1).sort({$natural:-1}).toArray((err, result) => {
     if (err) {
       return console.log(err);
@@ -60,9 +62,47 @@ app.get('/', function (req, res) {
       res.locals.greeting = result[key].content;
     })(result);
 
+    latestMessageFetched = true;
 
-    res.render('home');
   });
+
+  var latestMessagesFetched = false;
+
+  db.collection('greetings').find().limit(5).skip(1).sort({$natural:-1}).toArray((err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+
+    var listOfGreetings = [];
+
+    result.forEach(function(item) {
+        listOfGreetings.push(item.content);
+    });
+
+    console.log(listOfGreetings);
+
+    res.locals.latestGreetings = listOfGreetings;
+
+
+    latestMessagesFetched = true;
+
+  });
+
+  var wait = setInterval(
+    function () {
+      if (latestMessageFetched && latestMessagesFetched) {
+        render ();
+        clearInterval(wait);
+      }
+    },
+    20
+  )
+
+  var render = function () {
+    res.render('home');
+  }
+
+
 });
 
 app.get('/thanks', function (req, res) {

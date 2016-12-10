@@ -3,8 +3,6 @@ html, body {
 }
 
 body {
-  max-width: 400px;
-  margin: 0 auto;
   // font-family: 'Farsan', cursive;
   padding: 30px;
 
@@ -26,8 +24,24 @@ body {
 
 }
 
+.add-greeting {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 .greeting {
-  font-size: 3em;
+  text-align: center;
+  font-size: 4em;
+  margin-bottom: 1em;
+  color: #fff;
+  font-family: 'Farsan';
+}
+
+.lastest-greetings {
+  max-width: 400px;
+  margin: 4em auto;
+  text-align: center;
+  font-size: 1.5em;
   margin-bottom: 2em;
   color: #fff;
   font-family: 'Farsan';
