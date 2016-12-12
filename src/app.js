@@ -1,139 +1,45 @@
 'use strict';
 
 // ---------------------------------------------
-// IMPORT SETTINGS
-// environment settings
-var envSettings = require('./envSettings.json');
-// app settings
+// Global App Settings
 var settings = require('./settings.json');
 
 // ---------------------------------------------
-// MODULES
+// Modules
 var express = require('express');
 var app = express();
-var MongoClient = require('mongodb').MongoClient;
-var bodyParser = require('body-parser');
-var multer = require('multer');
-var upload = multer(); // for parsing multipart/form-data
-
-app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 // ---------------------------------------------
-// GLOBALS
-var db;
+// Utilities
+var database = require('./database');
 
 // ---------------------------------------------
-// DB CONNECT
-
-MongoClient.connect(envSettings.db.uri, (err, database) => {
-  db = database;
-  listen();
-})
+// Controllers
+var user = require('./user')
+var home = require('./home')
 
 // ---------------------------------------------
-// STATIC FILES
-app.use('/static', express.static(__dirname + '/public'));
-
-// ---------------------------------------------
-// VIEW ENGINE
+// Have fun with PUG templates
 app.set('view engine', 'pug');
 app.set('views', __dirname  + '/views');
 
 // ---------------------------------------------
-// ROUTES
-
-
-app.get('/', function (req, res) {
-  var title = settings.frontend.appName + ' | ' + settings.frontend.appNote;
-  res.locals.title = title;
-
-  var latestMessageFetched = false;
-
-  db.collection('greetings').find().limit(1).sort({$natural:-1}).toArray((err, result) => {
-    if (err) {
-      return console.log(err);
-    }
-
-    // Pick a random greeting
-    var pickGreeting = (function (result) {
-      var count = result.length;
-      var key = Math.floor(Math.random() * count);
-      res.locals.greeting = result[key].content;
-    })(result);
-
-    latestMessageFetched = true;
-
-  });
-
-  var latestMessagesFetched = false;
-
-  db.collection('greetings').find().limit(5).skip(1).sort({$natural:-1}).toArray((err, result) => {
-    if (err) {
-      return console.log(err);
-    }
-
-    var listOfGreetings = [];
-
-    result.forEach(function(item) {
-        listOfGreetings.push(item.content);
-    });
-
-    console.log(listOfGreetings);
-
-    res.locals.latestGreetings = listOfGreetings;
-
-
-    latestMessagesFetched = true;
-
-  });
-
-  var wait = setInterval(
-    function () {
-      if (latestMessageFetched && latestMessagesFetched) {
-        render ();
-        clearInterval(wait);
-      }
-    },
-    20
-  )
-
-  var render = function () {
-    res.render('home');
-  }
-
-
-});
-
-app.get('/thanks', function (req, res) {
-  var title = settings.frontend.appName + ' | ' + settings.frontend.appNote;
-  res.locals.title = title;
-  res.render('thanks');
-});
-
-
-app.post('/add-greeting', (req, res) => {
-  console.log("something is coming in!");
-  console.log(req.body);
-
-  var newGreeting = req.body.greeting;
-  var password = req.body.password;
-
-  if (password == envSettings.dummyUserPassword) {
-    db.collection('greetings').insert( { content: newGreeting } );
-    res.redirect('/thanks');
-  } else {
-    res.sendStatus(403);
-  }
-
-
-})
+// Serve static files
+app.use('/static', express.static(__dirname + '/public'));
 
 // ---------------------------------------------
-// LISTEN
+// Routing routes
+app.use('/user', user)
+app.use('/', home)
 
-var listen = function() {
+// ---------------------------------------------
+// Connect to the DB and if OK listen...
+
+database.init(function (error) {
+  if (error) {
+    throw error;
+  }
   app.listen(80, function () {
-    console.log('Example app listening on port 80!');
+    console.log('Listening on port 80!');
   });
-}
+})
