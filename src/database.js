@@ -49,8 +49,6 @@ module.exports.init = function (callback) {
         return false;
       }
 
-      var connect
-
       database.collection('users').find({'_userID' : userName}, function(err, result){
         if (err) {
           return console.log(err);
