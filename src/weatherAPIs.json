@@ -1,6 +1,0 @@
-{
-	"wunderground": {
-		"key": "86d135557d711949",
-		"locationQuery": "http://autocomplete.wunderground.com/aq?query="
-	}
-}
