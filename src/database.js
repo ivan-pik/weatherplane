@@ -57,10 +57,8 @@ module.exports.init = function (callback) {
         result.toArray(function (err,items) {
           console.log(items);
           if(items.length) {
-            console.log("gonna coll yes");
             exists();
           } else {
-            console.log("gonna coll false");
             doesntExist();
           }
         });
