@@ -30,12 +30,12 @@ router.get('/:userId/', function (req, res) {
   (function () {
     let findUsersLocations = function () {
       console.log("Going to search for locations");
-      res.send('This user exists! The dream is that you will see locations of user \"' + user + '\" here.');
+      res.send('This user exists! The dream is that you will see locations of user \"' + req.params.userId + '\" here.');
     }
 
     let showError = function () {
       console.log("Sorry, this user doesn't exist");
-      res.send('It seems that user \"' + user + '\" does not exist');
+      res.send('It seems that user \"' + req.params.userId + '\" does not exist');
     }
 
     database.userExists(req.params.userId, findUsersLocations, showError);
