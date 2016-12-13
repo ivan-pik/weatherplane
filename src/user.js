@@ -8,7 +8,6 @@ var router = express.Router()
 // Utilities
 
 var database = require('./database');
-var database = require('./database');
 
 
 // ---------------------------------------------
