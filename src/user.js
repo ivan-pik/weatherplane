@@ -26,8 +26,6 @@ router.get('/', function (req, res) {
 
 router.get('/:userId/', function (req, res) {
 
-  var user = req.params.userId;
-
   // Checking if user exists and callbacks
   (function () {
     let findUsersLocations = function () {
@@ -40,7 +38,7 @@ router.get('/:userId/', function (req, res) {
       res.send('It seems that user \"' + user + '\" does not exist');
     }
 
-    database.userExists(user, findUsersLocations, showError);
+    database.userExists(req.params.userId, findUsersLocations, showError);
   })();
 
 })
@@ -49,8 +47,6 @@ router.get('/:userId/', function (req, res) {
 // User location page "/john-smith/yatton"
 
 router.get('/:userId/:locationId', function (req, res) {
-
-  var user = req.params.userId;
 
   // Checking if user exists and callbacks
   (function () {
@@ -63,7 +59,7 @@ router.get('/:userId/:locationId', function (req, res) {
       res.send('It seems that user \"' + user + '\" does not exist. Not sure what are you trying to do here.');
     }
 
-    database.userExists(user, findUsersLocations, showError );
+    database.userExists(req.params.userId, findUsersLocations, showError );
   })();
 })
 
