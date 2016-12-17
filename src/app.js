@@ -1,8 +1,5 @@
 'use strict';
 
-// ---------------------------------------------
-// Global App Settings
-var settings = require('./settings.json');
 
 // ---------------------------------------------
 // Modules
@@ -15,6 +12,13 @@ var MongoStore = require('connect-mongo')(session);
 // ---------------------------------------------
 // Utilities
 var database = require('./database');
+
+
+// ---------------------------------------------
+// Local App Settings
+var settings = require('./settings.json');
+app.locals.title = settings.frontend.appName;
+
 
 // ---------------------------------------------
 // Use sessions
