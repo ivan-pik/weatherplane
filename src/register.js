@@ -20,6 +20,8 @@ router.get('/',mid.loggedOut , function (req, res) {
 // User registration page "/john-smith" POST
 
 router.post('/', function (req, res, next) {
+  // @todo: Only allow a-z, 0-9,"_", "-" in userID
+  // @todo: Add server side e-mail validation
   if (req.body.userID &&
     req.body.email &&
     req.body.password &&
