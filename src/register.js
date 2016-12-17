@@ -44,6 +44,7 @@ router.post('/', function (req, res, next) {
         } else {
           req.session.userId = user._id;
           req.session.userSlug = user._userID;
+          req.app.locals.currentUserSlug = user._userID;
           res.redirect('/user/'+req.session.userSlug);
         }
       })
