@@ -1,0 +1,48 @@
+extends ../layout.pug
+
+block content
+  h1.greeting Register
+
+  .add-greeting.panel.panel-default
+    .panel-heading
+      h2.panel-title Registration Form
+
+    .panel-body
+      form(
+         action='register'
+         method='POST'
+      )
+        .form-group
+          label User Name (only a-z, numbers, - and _)
+          input.form-control(
+            type='text'
+            name='userID'
+            placeholder='Enter username'
+          )
+        .form-group
+          label Email
+          input.form-control(
+            type='email'
+            name='email'
+            placeholder='Enter your e-mail'
+          )
+        .form-group
+          label Password
+          input.form-control(
+            type='password'
+            name='password'
+            placeholder='Enter the password'
+          )
+
+        .form-group
+          label Repeat Password
+          input.form-control(
+            type='password'
+            name='confirmPassword'
+            placeholder='Enter the password'
+          )
+
+        input.btn.btn-primary(
+          type='submit'
+          value='Add'
+        )

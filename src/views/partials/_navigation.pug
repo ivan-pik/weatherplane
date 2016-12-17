@@ -1,0 +1,15 @@
+.panel.panel-default
+  .panel-body
+    ul.nav.nav-pills
+      li
+        a( href='/' ) Home
+      if !currentUser
+        li
+          a( href='/login' ) Login
+        li
+          a( href='/register' ) Register
+      if currentUser
+        li
+          a( href='/logout' ) Log out
+        li
+          a( href='user/ivanpik') My Profile

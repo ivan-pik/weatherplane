@@ -1,0 +1,35 @@
+extends ../layout.pug
+
+block content
+  h1.greeting Login
+
+  .add-greeting.panel.panel-default
+    .panel-heading
+      h2.panel-title Login Form
+
+    .panel-body
+      form(
+         action='login'
+         method='POST'
+      )
+        .form-group
+          label User Name
+          input.form-control(
+            type='text'
+            name='userID'
+            placeholder='Enter username'
+          )
+        .form-group
+          label Password
+          input.form-control(
+            type='password'
+            name='password'
+            placeholder='Enter the password'
+          )
+
+
+
+        input.btn.btn-primary(
+          type='submit'
+          value='Login'
+        )

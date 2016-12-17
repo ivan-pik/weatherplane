@@ -1,8 +1,10 @@
 // ---------------------------------------------
 // Modules
 
-var express = require('express')
-var router = express.Router()
+var express = require('express');
+var router = express.Router();
+var User = require('./models/user.js');
+var mid = require('./middleware/users');
 
 // ---------------------------------------------
 // Utilities
@@ -21,27 +23,24 @@ router.get('/', function (req, res) {
   res.send('user home page')
 })
 
+
+
+
+
 // ---------------------------------------------
 // User profile page "/john-smith"
 
-router.get('/:userId/', function (req, res) {
+router.get('/:userId/', mid.requiresLogin , function (req, res, next) {
+  User.findById(req.session.userId)
+    .exec(function (error, user) {
+      if (error) {
+        return next(error);
+      } else {
+        return res.render('user/profile', {'name': user._userID});
+      }
+    })
 
-  // Checking if user exists and callbacks
-  (function () {
-    let findUsersLocations = function () {
-      console.log("Going to search for locations");
-      res.send('This user exists! The dream is that you will see locations of user \"' + req.params.userId + '\" here.');
-    }
-
-    let showError = function () {
-      console.log("Sorry, this user doesn't exist");
-      res.send('It seems that user \"' + req.params.userId + '\" does not exist');
-    }
-
-    database.userExists(req.params.userId, findUsersLocations, showError);
-  })();
-
-})
+});
 
 // ---------------------------------------------
 // User location page "/john-smith/yatton"
@@ -49,19 +48,10 @@ router.get('/:userId/', function (req, res) {
 router.get('/:userId/:locationId', function (req, res) {
 
   // Checking if user exists and callbacks
-  (function () {
-    let findUsersLocations = function () {
-      res.send("Asking for a location slug \"" + req.params.locationId + "\" of the existing user \"" + req.params.userId + "\". Don't know yet if the location exists though...Also need to check if the location is public - otherwise request login first! Callback hell. Please help");
-    }
 
-    let showError = function () {
-      console.log("Sorry, this user doesn't exist");
-      res.send('It seems that user \"' + user + '\" does not exist. Not sure what are you trying to do here.');
-    }
 
-    database.userExists(req.params.userId, findUsersLocations, showError );
-  })();
-})
+});
+
 
 // ---------------------------------------------
 // Module exports
