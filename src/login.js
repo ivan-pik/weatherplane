@@ -21,7 +21,7 @@ router.post('/', function (req, res, next) {
   if (req.body.userID && req.body.password) {
     User.authenticate(req.body.userID, req.body.password, function (error, user) {
       if (error || !user) {
-        var err = new Errrow('Wrong e-mail or password.');
+        var err = new Error('Wrong e-mail or password.');
         err.status = 401;
         return next(err);
       } else {
