@@ -21,8 +21,8 @@ var database = require('./database');
 // ---------------------------------------------
 // User home page "/"
 
-router.get('/', function (req, res) {
-  res.send('user home page')
+router.get('/', mid.loggedOut, function (req, res) {
+  res.redirect('/login');
 })
 
 
