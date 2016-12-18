@@ -10,7 +10,7 @@ function loggedOut (req, res, next) {
 function requiresLogin (req, res, next) {
   if (req.session && req.session.userId) {
     if (req.params.userId != req.session.userSlug) {
-      var err = new Error("This is not your profile");
+      var err = new Error("This is not your profile. Please log out and log in as \"" + req.params.userId + "\" to access this profile.");
       err.status = 403;
       return next(err);
     }
