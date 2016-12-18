@@ -47,7 +47,20 @@ router.post('/', function (req, res, next) {
           // On duplicate entry (user name or e-mail)
           if (error.code == 11000) {
             // @todo: How to find which key is being duplicated from the error message?
-            var err = new Error('Sorry someone with this name or e-mail already exists');
+            var err = "";
+            // Duplicated _userID
+            if (error.errmsg.includes("_userID_1")) {
+              var err = new Error('This user already exists');
+            }
+            // Duplicated email
+            else if (error.errmsg.includes("email_1")) {
+              var err = new Error('User with this email already exists!');
+            }
+            // Fallback error in case the detection above fails
+            else {
+              var err = new Error('Sorry someone with this name or e-mail already exists');
+            }
+
             err.status = 400;
             return res.render('user/register',
               {message: {
@@ -55,13 +68,15 @@ router.post('/', function (req, res, next) {
                 text: err
               }}
             );
+          } else {
+              // Any other error
+              return next(error);
           }
-          return next(error);
         } else {
           // Yay, a new user is  created
           req.session.userId = user._id;
           req.session.userSlug = user._userID;
-          
+
           // send mail
           mailer.sendRegistrationConfirmation(req);
 
