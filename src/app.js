@@ -31,12 +31,14 @@ app.use(session({
   })
 }))
 
+// ---------------------------------------------
+// Variables available for the whole app
+
 app.use(function(req, res, next) {
+  res.locals.currentUserSlug = req.session.userSlug;
   res.locals.currentUser = req.session.userId;
   next();
 })
-
-
 
 // ---------------------------------------------
 // Controllers

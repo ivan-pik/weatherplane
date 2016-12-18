@@ -61,9 +61,7 @@ router.post('/', function (req, res, next) {
           // Yay, a new user is  created
           req.session.userId = user._id;
           req.session.userSlug = user._userID;
-          // @todo: Discover why this becomes "undefined" under some conditions
-          req.app.locals.currentUserSlug = user._userID;
-
+          
           // send mail
           mailer.sendRegistrationConfirmation(req);
 
