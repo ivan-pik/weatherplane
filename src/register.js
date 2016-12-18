@@ -54,8 +54,6 @@ router.post('/', function (req, res, next) {
         if (error) {
           // On duplicate entry (user name or e-mail)
           if (error.code == 11000) {
-            // @todo: How to find which key is being duplicated from the error message?
-            var err = "";
             // Duplicated _userID
             if (error.errmsg.includes("_userID_1")) {
               var err = new Error('User \"' + req.body.userID + '\" already exists');
