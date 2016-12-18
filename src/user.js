@@ -48,8 +48,7 @@ router.get('/:userId/', mid.requiresLogin , function (req, res, next) {
 // User location page "/john-smith/yatton"
 
 router.get('/:userId/:locationId', function (req, res) {
-
-  // Checking if user exists and callbacks
+  res.send("location page");
 
 
 });
