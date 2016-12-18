@@ -14,15 +14,14 @@ block content
       )
         .form-group
           label User Name
-          - var prefill = ""
           if form && form.prefill.userId
-            - prefill = form.prefill.userId;
+            - var prefill = form.prefill.userId;
 
           input.form-control(
             type='text'
             name='userID'
             placeholder='Enter username'
-            value= prefill
+            value= prefill || ''
           )
         .form-group
           label Password

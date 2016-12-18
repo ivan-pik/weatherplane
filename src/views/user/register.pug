@@ -14,10 +14,15 @@ block content
       )
         .form-group
           label User Name (only a-z, numbers, - and _)
+          if form && form.prefill
+            - var prefillUserID = (form.prefill.userID ? form.prefill.userID : "")
+            - var prefillEmail = (form.prefill.email ? form.prefill.email : "")
+
           input.form-control(
             type='text'
             name='userID'
             placeholder='Enter username'
+            value=prefillUserID || ""
           )
         .form-group
           label Email
@@ -25,6 +30,7 @@ block content
             type='email'
             name='email'
             placeholder='Enter your e-mail'
+            value=prefillEmail || ""
           )
         .form-group
           label Password

@@ -29,10 +29,18 @@ router.post('/', function (req, res, next) {
         var err = new Error('Passwords don\'t match');
         err.status = 400;
         res.render('user/register',
-          {message: {
-            type: 'warning',
-            text: err
-          }}
+          {
+            message: {
+              type: 'warning',
+              text: err
+            },
+            form: {
+              prefill: {
+                userID: req.body.userID || '',
+                email: req.body.email || ''
+              }
+            }
+          }
         );
       }
 
@@ -50,11 +58,11 @@ router.post('/', function (req, res, next) {
             var err = "";
             // Duplicated _userID
             if (error.errmsg.includes("_userID_1")) {
-              var err = new Error('This user already exists');
+              var err = new Error('User \"' + req.body.userID + '\" already exists');
             }
             // Duplicated email
             else if (error.errmsg.includes("email_1")) {
-              var err = new Error('User with this email already exists!');
+              var err = new Error('User with email \"' + req.body.email + '\" already exists!');
             }
             // Fallback error in case the detection above fails
             else {
@@ -63,10 +71,12 @@ router.post('/', function (req, res, next) {
 
             err.status = 400;
             return res.render('user/register',
-              {message: {
-                type: 'warning',
-                text: err
-              }}
+              {
+                message: {
+                  type: 'warning',
+                  text: err
+                }
+              }
             );
           } else {
               // Any other error
@@ -88,10 +98,18 @@ router.post('/', function (req, res, next) {
     var err = new Error('All fields required');
     err.status = 400;
     res.render('user/register',
-      {message: {
-        type: 'warning',
-        text: err
-      }}
+      {
+        message: {
+          type: 'warning',
+          text: err
+        },
+        form: {
+          prefill: {
+            userID: req.body.userID || '',
+            email: req.body.email || ''
+          }
+        }
+      }
     );
   }
 })

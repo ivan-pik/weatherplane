@@ -42,11 +42,19 @@ router.post('/', function (req, res, next) {
   } else {
     var err = new Error('All fields required');
     err.status = 401;
+    console.log(req.body.userId);
     res.render('user/login',
-      {message: {
-        type: 'warning',
-        text: err
-      }}
+      {
+        message: {
+          type: 'warning',
+          text: err
+        },
+        form: {
+          prefill: {
+            userId: req.body.userID || ''
+          }
+        }
+      }
     );
   }
 })
