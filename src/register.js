@@ -28,7 +28,7 @@ router.post('/', function (req, res, next) {
       if (req.body.password != req.body.confirmPassword) {
         var err = new Error('Passwords don\'t match');
         err.status = 400;
-        res.render('user/register',
+        return res.render('user/register',
           {
             message: {
               type: 'warning',
