@@ -25,6 +25,8 @@ function sendRegistrationConfirmation (req) {
   var html = '<p>This is to confirm that your user account <strong>'
     + req.session.userSlug + '</strong> was created.</p>';
 
+  // @todo ask for email confirmation
+
   var emailAddress = (envSettings.env == 'DEVEL') ? envSettings.devel.testEmail : req.body.email;
 
   var mailOptions = {
