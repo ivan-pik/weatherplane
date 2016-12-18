@@ -6,8 +6,7 @@ var express = require('express')
 var router = express.Router()
 var mid = require('./middleware/users');
 var User = require('./models/user.js');
-
-
+var mailer = require('./mailer.js');
 
 // ---------------------------------------------
 // User registration page "/register"
@@ -59,9 +58,15 @@ router.post('/', function (req, res, next) {
           }
           return next(error);
         } else {
+          // Yay, a new user is  created
           req.session.userId = user._id;
           req.session.userSlug = user._userID;
+          // @todo: Discover why this becomes "undefined" under some conditions
           req.app.locals.currentUserSlug = user._userID;
+
+          // send mail
+          mailer.sendRegistrationConfirmation(req);
+
           res.redirect('/user/'+req.session.userSlug);
         }
       })
