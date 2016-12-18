@@ -16,9 +16,21 @@ function requiresLogin (req, res, next) {
     }
     return next();
   } else {
-    var err = new Error("not logged in!!!");
+    var err = new Error("You need to login to see this page");
     err.status = 403;
-    return next(err);
+    res.render('user/login',
+      {
+        message: {
+          type: 'warning',
+          text: err
+        },
+        form: {
+          prefill: {
+            userId: req.params.userId
+          }
+        }
+      }
+    );
   }
 }
 
