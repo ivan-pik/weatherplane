@@ -2,5 +2,9 @@ include ./partials/_head.pug
 include ./partials/_navigation.pug
 body
   block message
+    if message
+      if message.type == 'warning'
+        .alert.alert-warning
+          p #{message.text}
 
   block content

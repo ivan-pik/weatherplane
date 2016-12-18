@@ -29,7 +29,12 @@ router.post('/', function (req, res, next) {
       if (req.body.password != req.body.confirmPassword) {
         var err = new Error('Passwords don\'t match');
         err.status = 400;
-        return next(err);
+        res.render('user/register',
+          {message: {
+            type: 'warning',
+            text: err
+          }}
+        );
       }
 
       var UserData = {
@@ -38,8 +43,6 @@ router.post('/', function (req, res, next) {
         password: req.body.password
       };
 
-      console.log(UserData);
-
       User.create(UserData, function (error, user) {
         if (error) {
           // On duplicate entry (user name or e-mail)
@@ -47,7 +50,12 @@ router.post('/', function (req, res, next) {
             // @todo: How to find which key is being duplicated from the error message?
             var err = new Error('Sorry someone with this name or e-mail already exists');
             err.status = 400;
-            return next(err);
+            return res.render('user/register',
+              {message: {
+                type: 'warning',
+                text: err
+              }}
+            );
           }
           return next(error);
         } else {
@@ -61,7 +69,12 @@ router.post('/', function (req, res, next) {
   } else {
     var err = new Error('All fields required');
     err.status = 400;
-    return next(err);
+    res.render('user/register',
+      {message: {
+        type: 'warning',
+        text: err
+      }}
+    );
   }
 })
 

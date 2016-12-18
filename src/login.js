@@ -25,7 +25,12 @@ router.post('/', function (req, res, next) {
       if (error || !user) {
         var err = new Error('Wrong e-mail or password.');
         err.status = 401;
-        return next(err);
+        res.render('user/login',
+          {message: {
+            type: 'warning',
+            text: err
+          }}
+        );
       } else {
         req.session.userId = user._id;
         req.session.userSlug = user._userID;
@@ -38,7 +43,12 @@ router.post('/', function (req, res, next) {
   } else {
     var err = new Error('All fields required');
     err.status = 401;
-    return next(err);
+    res.render('user/login',
+      {message: {
+        type: 'warning',
+        text: err
+      }}
+    );
   }
 })
 
