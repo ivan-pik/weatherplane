@@ -50,5 +50,37 @@ function requiresLogin (req, res, next) {
   }
 }
 
+// ---------------------------------------------
+// newPasswordTokenCheck
+/*
+This checks if user has a valid token to be
+able to change a password on "login/new-password".
+This can be used to prevent displaying this page
+to missing/invalid tokens and for authenticating the POST
+request for the actual change.
+*/
+function newPasswordTokenCheck (req, res, next) {
+  if (req.query && req.query.auth) {
+    // @todo: search for a user with this token associated
+      // Check if the req token is expired
+        // IF (actual time - token time > token.expiration)
+          // Error: This link is no longer valid and redirect to the login page
+
+      // check if some user has it
+      // IF (no associated token found)
+        // Error: This link is no longer valid and redirect to the login page
+      // ELSE
+        // All good, callback
+
+
+  }
+  // When no token is present, just go to "/login"
+  return res.redirect('/login');
+}
+
+// ---------------------------------------------
+// Module exports
+
 module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
+module.exports.newPasswordTokenCheck = newPasswordTokenCheck;

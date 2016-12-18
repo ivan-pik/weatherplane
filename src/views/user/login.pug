@@ -34,3 +34,13 @@ block content
           type='submit'
           value='Login'
         )
+
+  .panel.panel-default
+    .panel-body
+      p Forgot
+        = ' '
+        a(href='/login/forgot-password') password
+        = ' '
+        | or
+        = ' '
+        a(href='/login/forgot-user-name') user name

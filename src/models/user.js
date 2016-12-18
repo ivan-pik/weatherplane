@@ -26,6 +26,7 @@ var UserSchema = new mongoose.Schema({
   versionKey: false
 });
 
+// Authenticate user
 
 UserSchema.statics.authenticate = function(userID, password, callback) {
   User.findOne({_userID: userID})
@@ -48,6 +49,38 @@ UserSchema.statics.authenticate = function(userID, password, callback) {
     })
 }
 
+UserSchema.statics.findByUserID = function(userID, callback) {
+  User.findOne({_userID: userID})
+    .exec(function (error, user) {
+      if(error) {
+        return callback(error);
+      } else if (!user) {
+        var err = new Error('User not found');
+        err.status = '401';
+        return callback(err);
+      } else {
+        return callback(null, user);
+      }
+    })
+}
+
+UserSchema.statics.findByEmail = function(email, callback) {
+  User.findOne({email: email})
+    .exec(function (error, user) {
+      if(error) {
+        return callback(error);
+      } else if (!user) {
+        var err = new Error('User with email ' + email + ' wasn\'t found.');
+        // @todo: What status to send?
+        err.status = '401';
+        return callback(err);
+      } else {
+        return callback(null, user);
+      }
+    })
+}
+
+
 
 // Hash password before saving them to DB
 UserSchema.pre('save', function(next) {
@@ -60,6 +93,25 @@ UserSchema.pre('save', function(next) {
     next();
   })
 })
+
+
+// Update password
+// Never call this without authorising first!
+UserSchema.statics.updatePassword = function(authorised, userID, newPassword, callback) {
+  if (authorised) {
+    // @todo Update password field with newPassword
+    // Make sure that "UserSchema.pre   will be called to encrypt the password before saving
+    // Handle errors
+      // user not find
+      // fallback error
+  } else {
+    var err = new Error("Not authorised to change user settings");
+    return callback(err);
+  }
+});
+
+
+
 
 
 

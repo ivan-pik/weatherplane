@@ -1,0 +1,30 @@
+extends ../layout.pug
+
+block content
+  h1.greeting Forgot user name
+
+  .panel.panel-default
+    .panel-heading
+      h2.panel-title Retrieve your user name
+
+    .panel-body
+      form(
+         action='/login/forgot-user-name'
+         method='POST'
+      )
+        .form-group
+          label Please enter the email address you used for registration
+          if form && form.prefill.userId
+            - var prefill = form.prefill.userId;
+
+          input.form-control(
+            type='email'
+            name='email'
+            placeholder='Enter your email'
+            value= prefill || ''
+          )
+
+        input.btn.btn-primary(
+          type='submit'
+          value='Continue'
+        )
