@@ -8,6 +8,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+var envSettings = require('./envSettings.json');
 
 // ---------------------------------------------
 // Utilities
@@ -18,6 +19,7 @@ var database = require('./database');
 // Local App Settings
 var settings = require('./settings.json');
 app.locals.title = settings.frontend.appName;
+app.locals.siteURL = (envSettings.env == 'DEVEL') ? envSettings.devel.siteURL : envSettings.production.siteURL;
 
 
 // ---------------------------------------------
