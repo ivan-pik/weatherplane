@@ -61,6 +61,7 @@ request for the actual change.
 */
 function newPasswordTokenCheck (req, res, next) {
   if (req.query && req.query.auth) {
+    
     // @todo: search for a user with this token associated
       // Check if the req token is expired
         // IF (actual time - token time > token.expiration)
@@ -72,8 +73,9 @@ function newPasswordTokenCheck (req, res, next) {
       // ELSE
         // All good, callback
 
-
+    next();
   }
+
   // When no token is present, just go to "/login"
   return res.redirect('/login');
 }

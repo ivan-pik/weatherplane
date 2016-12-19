@@ -89,6 +89,15 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
         );
       } else {
         // @todo generate auth token
+
+
+        // var generateToken = User.generateToken(req.body.userID)
+        //   .then(function (value) {
+        //     console.log("Token generated", value);
+        //   });
+
+
+
         // save token with this _userID
         // study how to make token generation secret, otherwise someone could generate their own
         // pass token to the email

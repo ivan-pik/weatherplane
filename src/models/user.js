@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 var UserSchema = new mongoose.Schema({
   _userID: {
@@ -78,7 +78,8 @@ UserSchema.statics.findByEmail = function(email, callback) {
         return callback(null, user);
       }
     })
-}
+};
+
 
 
 
@@ -108,8 +109,7 @@ UserSchema.statics.updatePassword = function(authorised, userID, newPassword, ca
     var err = new Error("Not authorised to change user settings");
     return callback(err);
   }
-});
-
+};
 
 
 
