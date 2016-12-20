@@ -1,4 +1,5 @@
 'use strict';
+var Token = require('../models/token.js');
 
 // ---------------------------------------------
 // loggedOut
@@ -60,8 +61,46 @@ to missing/invalid tokens and for authenticating the POST
 request for the actual change.
 */
 function newPasswordTokenCheck (req, res, next) {
-  if (req.query && req.query.auth) {
-    
+  if (req.query && req.query.token) {
+    function getTimeStamp(str) {
+        return str.split('-')[1];
+    }
+
+    // First just check the timestamp of the request
+    // so it can be refused immediately
+    var timestamp = getTimeStamp(req.query.token),
+        currentTimeStamp = Math.floor(Date.now() / 1000),
+        expiryLength = {
+          "value": 60, //minutes @todo, read from settings.json
+          "toSeconds": function () {
+            return (this.value * 60)
+          }
+        },
+        timeDifference = currentTimeStamp - timestamp;
+
+    // If too old
+    if (timeDifference > expiryLength.toSeconds()) {
+      console.log("too old");
+      var error = new Error("This link is expired. Please request a new password reset.");
+      // @todo set correct status
+      error.status = '401';
+      next(error);
+    // Still fresh, let's check DB for it
+    } else {
+      Token.authenticate(req.query.userID, req.query.token, function (error, token) {
+        if (error || !token) {
+          var err = new Error('This link is not valid. Please request a new password reset.');
+          err.status = 401;
+          next(err);
+        } else {
+          next();
+        }
+      });
+    }
+
+
+
+
     // @todo: search for a user with this token associated
       // Check if the req token is expired
         // IF (actual time - token time > token.expiration)
@@ -73,11 +112,11 @@ function newPasswordTokenCheck (req, res, next) {
       // ELSE
         // All good, callback
 
-    next();
-  }
 
-  // When no token is present, just go to "/login"
-  return res.redirect('/login');
+  } else {
+    // When no token is present, just go to "/login"
+    return res.redirect('/login');
+  }
 }
 
 // ---------------------------------------------

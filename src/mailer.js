@@ -47,19 +47,20 @@ function sendRegistrationConfirmation (req) {
   });
 }
 
-function sendLostPassword (user, req) {
+function sendLostPassword (content, req, callback) {
   // @todo add link with token allowing password change
   // @todo better copy
-  var text = 'Reset pswd for ' + user._userID + 'You can login at ' + req.app.locals.siteURL + 'login?username=' + user._userID;
-  // @todo better copy
-  var html = '<p>Reset pswd for ' + user._userID + '</p><p>You can login at <a href=\"' + req.app.locals.siteURL + 'login?username=' + user._userID + '\">here</a></p>';
 
-  var emailAddress = (envSettings.env == 'DEVEL') ? envSettings.devel.testEmail : user.email;
+  var text = 'Required password reset for ' + content._userID + 'You can set a new password within 1 hour at ' + req.app.locals.siteURL + 'login/new-password?token=' + content.token + '&userID=' + content._userID;
+  // @todo better copy, probably show full link as well in case mail client fails to make a HTML link
+  var html = '<p>Required password reset for user <strong>' + content._userID + '</strong></p><p>You can set a new password within 1 hour <a href=\"' + req.app.locals.siteURL + 'login/new-password?token=' + content.token + '&userID=' + content._userID + '\">here</a></p>';
+
+  var emailAddress = (envSettings.env == 'DEVEL') ? envSettings.devel.testEmail : content.email;
 
   var mailOptions = {
     from: envSettings.email.account,
     to: emailAddress,
-    subject: 'WeatherPlane.com password reset for user ' + user._userID,
+    subject: 'WeatherPlane.com password reset for user ' + content._userID,
     text: text,
     html: html
   };
@@ -68,8 +69,10 @@ function sendLostPassword (user, req) {
     if (error) {
       // @todo Write this in some log file so I can monitor it?
         console.log(error);
+        callback(error);
     } else {
         console.log('Message sent: ' + info.response);
+        callback(null, info.response);
     };
   });
 }
