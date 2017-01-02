@@ -128,7 +128,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
               });
 
             }).then(function (sent) {
-              return res.render('user/forgot-password',
+              return res.render('user/login',
                 {
                   message: {
                     type: 'success',
@@ -205,16 +205,87 @@ router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
 });
 
 router.get('/new-password', [mid.loggedOut, mid.newPasswordTokenCheck], function (req, res) {
-  // @todo place token from URL query into the hidden form field
-  // so it can be posted with the form for validation
-  res.render('user/new-password');
+  // this is so I can validate it again after sending
+  // @todo I would be better off just making the form post
+  // to /new-password/token123456
+  var form = {
+    form: {
+      token : req.query.token,
+      username : req.query.userID
+    }
+  }
+
+  res.render('user/new-password', form);
 });
 
-router.post('/new-password', function (req, res) {
-  // @todo authenticate token again
-  // it will be posted via hidden fields
-  // @todo add Google reCaptcha
-  res.send("Todo: Password set");
+router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
+  // Handle input errors first
+  if (req.body.password && req.body.confirmPassword) {
+    if (req.body.password != req.body.confirmPassword) {
+      var err = new Error('Passwords don\'t match');
+      err.status = 400;
+      return res.render('user/new-password',
+        {
+          message: {
+            type: 'warning',
+            text: err
+          },
+          form: {
+            token : req.body.token,
+            username : req.body.userID
+          }
+        }
+      );
+    } else {
+
+
+      // @todo Change the password
+      // authorised, userID, newPassword, callback
+      User.updatePassword(true, req.body.userID, req.body.password, function (error, user) {
+
+      }
+
+
+      var templateData = {
+        message: {
+          type: 'success',
+          text: 'Password has been changed'
+        },
+        form: {
+          prefill: {
+            userId: req.body.userID
+          }
+        }
+      }
+
+      // @todo redirect to /login
+      // and display success message via flash message (yet to be implemented) "connect-flash" ?
+      // res.redirect('/login/');
+
+      // Meanwhile, keeping the same URL will do...
+
+      res.render('user/login', templateData);
+    }
+  } else {
+    var err = new Error('All fields are required');
+    err.status = 400;
+    res.render('user/new-password',
+      {
+        message: {
+          type: 'warning',
+          text: err
+        },
+        form: {
+          token : req.body.token,
+          username : req.body.userID
+        }
+      }
+    );
+  }
+
+
+
+
 });
 
 // ---------------------------------------------

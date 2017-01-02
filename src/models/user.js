@@ -101,6 +101,7 @@ UserSchema.pre('save', function(next) {
 UserSchema.statics.updatePassword = function(authorised, userID, newPassword, callback) {
   if (authorised) {
     // @todo Update password field with newPassword
+    // @continue
     // Make sure that "UserSchema.pre   will be called to encrypt the password before saving
     // Handle errors
       // user not find

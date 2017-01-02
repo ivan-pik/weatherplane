@@ -92,6 +92,7 @@ app.listen(80, function () {
 // Error handler
 // define as the last app.use callback
 app.use(function(err, req, res, next) {
+  console.log("error");
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

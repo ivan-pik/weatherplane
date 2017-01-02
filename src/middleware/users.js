@@ -61,14 +61,34 @@ to missing/invalid tokens and for authenticating the POST
 request for the actual change.
 */
 function newPasswordTokenCheck (req, res, next) {
-  if (req.query && req.query.token) {
+
+    var credentials = {}
+
+    if (req.query && req.query.token && req.query.userID) {
+      credentials = {
+        token: req.query.token,
+        userID: req.query.userID
+      }
+    } else if (req.body && req.body.token && req.body.userID) {
+      credentials = {
+        token: req.body.token,
+        userID: req.body.userID
+      }
+    } else {
+      var error = new Error("None or incomplete token or username in the link");
+      // @todo set correct status
+      error.status = '401';
+      next(error);
+    }
+
+  if (credentials) {
     function getTimeStamp(str) {
         return str.split('-')[1];
     }
 
     // First just check the timestamp of the request
     // so it can be refused immediately
-    var timestamp = getTimeStamp(req.query.token),
+    var timestamp = getTimeStamp(credentials.token),
         currentTimeStamp = Math.floor(Date.now() / 1000),
         expiryLength = {
           "value": 60, //minutes @todo, read from settings.json
@@ -81,13 +101,13 @@ function newPasswordTokenCheck (req, res, next) {
     // If too old
     if (timeDifference > expiryLength.toSeconds()) {
       console.log("too old");
-      var error = new Error("This link is expired. Please request a new password reset.");
+      var error = new Error("It\'s too late to reset your password. Please request a new password reset.");
       // @todo set correct status
       error.status = '401';
       next(error);
     // Still fresh, let's check DB for it
     } else {
-      Token.authenticate(req.query.userID, req.query.token, function (error, token) {
+      Token.authenticate(credentials.userID, credentials.token, function (error, token) {
         if (error || !token) {
           var err = new Error('This link is not valid. Please request a new password reset.');
           err.status = 401;
@@ -97,21 +117,6 @@ function newPasswordTokenCheck (req, res, next) {
         }
       });
     }
-
-
-
-
-    // @todo: search for a user with this token associated
-      // Check if the req token is expired
-        // IF (actual time - token time > token.expiration)
-          // Error: This link is no longer valid and redirect to the login page
-
-      // check if some user has it
-      // IF (no associated token found)
-        // Error: This link is no longer valid and redirect to the login page
-      // ELSE
-        // All good, callback
-
 
   } else {
     // When no token is present, just go to "/login"

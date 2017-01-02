@@ -41,8 +41,7 @@ TokenSchema.statics.generateToken = function () {
 }
 
 TokenSchema.statics.authenticate = function(userID, token, callback) {
-  console.log(userID, token);
-  //@todo this fails when user has more tokens
+
   Token.findOne({userID: userID})
     .exec(function (error, tokenDoc) {
       if(error) {
@@ -53,10 +52,13 @@ TokenSchema.statics.authenticate = function(userID, token, callback) {
         return callback(err);
       }
       bcrypt.compare(token, tokenDoc.token, function (error, result) {
-        if (result == true) {
+        if (result) {
           return callback(null, tokenDoc);
         } else {
-          return callback();
+          // @todo Better error message
+          var err = new Error('Token is invalid');
+          err.status = '401';
+          return callback(err);
         }
 
       })
