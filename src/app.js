@@ -48,6 +48,7 @@ var user = require('./user');
 var register = require('./register');
 var login = require('./login');
 var logout = require('./logout');
+var settings = require('./settings');
 var home = require('./home');
 
 // ---------------------------------------------
@@ -70,6 +71,7 @@ app.use('/static', express.static(__dirname + '/public'));
 // Routing routes
 app.use('/', home)
 app.use('/user', user)
+app.use('/settings', settings)
 app.use('/register', register)
 app.use('/login', login)
 app.use('/logout', logout)
@@ -92,7 +94,6 @@ app.listen(80, function () {
 // Error handler
 // define as the last app.use callback
 app.use(function(err, req, res, next) {
-  console.log("error");
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

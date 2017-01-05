@@ -1,4 +1,21 @@
 extends layout.pug
 
 block content
-  h1.greeting Home Page
+  h1.greeting Search for a place
+
+    form(
+       action='/'
+       method='POST'
+    )
+
+      input.form-control(
+        type='text'
+        name='location'
+        placeholder='Enter a location'
+        value= prefill || ''
+      )
+
+      input.btn.btn-primary(
+        type='submit'
+        value='Search'
+      )

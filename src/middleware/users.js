@@ -100,7 +100,6 @@ function newPasswordTokenCheck (req, res, next) {
 
     // If too old
     if (timeDifference > expiryLength.toSeconds()) {
-      console.log("too old");
       var error = new Error("It\'s too late to reset your password. Please request a new password reset.");
       // @todo set correct status
       error.status = '401';

@@ -100,17 +100,42 @@ UserSchema.pre('save', function(next) {
 // Never call this without authorising first!
 UserSchema.statics.updatePassword = function(authorised, userID, newPassword, callback) {
   if (authorised) {
-    // @todo Update password field with newPassword
-    // @continue
-    // Make sure that "UserSchema.pre   will be called to encrypt the password before saving
-    // Handle errors
-      // user not find
-      // fallback error
+
+    User.findById(userID, function (err, user) {
+      if (err) return callback(err);
+      user.password = newPassword;
+      tank.save(function (err, updatedTank) {
+        if (err) return handleError(err);
+        return callback(null, user);
+      });
+    });
+
+    User.findOne({_userID: userID})
+    .exec(function (error, user) {
+      if(error) {
+        return callback(error);
+      } else if (!user) {
+        var err = new Error('User with email ' + email + ' wasn\'t found.');
+        // @todo: What status to send?
+        err.status = '401';
+        return callback(err);
+      } else {
+        user.password = newPassword;
+        user.save(function (err, userNew) {
+          if (err) return callback(err);
+          return callback(null, user);
+        });
+
+
+      }
+    })
+
   } else {
     var err = new Error("Not authorised to change user settings");
     return callback(err);
   }
 };
+
 
 
 

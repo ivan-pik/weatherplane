@@ -40,10 +40,7 @@ function sendRegistrationConfirmation (req) {
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       // @todo Write this in some log file so I can monitor it?
-        console.log(error);
-    } else {
-        console.log('Message sent: ' + info.response);
-    };
+    }
   });
 }
 
@@ -68,10 +65,8 @@ function sendLostPassword (content, req, callback) {
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       // @todo Write this in some log file so I can monitor it?
-        console.log(error);
         callback(error);
     } else {
-        console.log('Message sent: ' + info.response);
         callback(null, info.response);
     };
   });
@@ -97,10 +92,8 @@ function sendLostUserName (user, req) {
   transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       // @todo Write this in some log file so I can monitor it?
-        console.log(error);
-    } else {
-        console.log('Message sent: ' + info.response);
-    };
+        // @todo handle error
+    }
   });
 }
 

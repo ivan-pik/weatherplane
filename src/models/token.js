@@ -24,7 +24,7 @@ TokenSchema.pre('save', function(next) {
   var tokenDoc = this;
   bcrypt.hash(tokenDoc.token, 10, function (err, hash) {
     if (err) {
-      console.log(err);
+      // @todo handle error
       // return next(err);
     }
     tokenDoc.token = hash;
@@ -65,6 +65,21 @@ TokenSchema.statics.authenticate = function(userID, token, callback) {
     })
 }
 
+
+TokenSchema.statics.delete = function(userID, callback) {
+
+  Token.findOne({userID: userID})
+    .exec(function (error, tokenDoc) {
+      if(error) {
+        return callback(error);
+      } else if (!tokenDoc) {
+        var err = new Error('Token not found');
+        err.status = '401';
+        return callback(error);
+      }
+      tokenDoc.remove(callback);
+    })
+}
 
 
 var Token = mongoose.model('Token', TokenSchema);

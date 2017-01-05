@@ -242,29 +242,40 @@ router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
       // @todo Change the password
       // authorised, userID, newPassword, callback
       User.updatePassword(true, req.body.userID, req.body.password, function (error, user) {
+        if (error) {
+          // @todo handle error
 
-      }
+        } else {
+          Token.delete(req.body.userID, function(error) {
+            if (error) {
+              // @todo handle error
+            } else {
+              var templateData = {
+                message: {
+                  type: 'success',
+                  text: 'Password has been changed'
+                },
+                form: {
+                  prefill: {
+                    userId: req.body.userID
+                  }
+                }
+              }
 
+              // @todo redirect to /login
+              // and display success message via flash message (yet to be implemented) "connect-flash" ?
+              // res.redirect('/login/');
 
-      var templateData = {
-        message: {
-          type: 'success',
-          text: 'Password has been changed'
-        },
-        form: {
-          prefill: {
-            userId: req.body.userID
-          }
+              // Meanwhile, keeping the same URL will do...
+
+              res.render('user/login', templateData);
+            }
+          });
         }
-      }
+      });
 
-      // @todo redirect to /login
-      // and display success message via flash message (yet to be implemented) "connect-flash" ?
-      // res.redirect('/login/');
 
-      // Meanwhile, keeping the same URL will do...
 
-      res.render('user/login', templateData);
     }
   } else {
     var err = new Error('All fields are required');
