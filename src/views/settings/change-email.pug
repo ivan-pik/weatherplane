@@ -1,35 +1,27 @@
-.panel.panel-default
-  .panel-heading
-    h2.panel-title Change Password
+extends ../layout.pug
 
-  .panel-body
-    form(
-       action='/settings/change-password'
+block content
+  h1.greeting Change email
+
+  .panel.panel-default
+    .panel-heading
+      h2.panel-title Change Email Address
+
+    .panel-body
+      form(
+       action='/settings/change-email'
        method='POST'
-    )
-      .form-group
-        label Current Password
-
-        input.form-control(
-          type='password'
-          name='password'
-        )
-      .form-group
-        label New Password
-
-        input.form-control(
-          type='password'
-          name='newPassword'
-        )
-      .form-group
-        label Repeat Password
-
-        input.form-control(
-          type='password'
-          name='confirmPassword'
-        )
-
-      input.btn.btn-primary(
-        type='submit'
-        value='Save'
       )
+        .form-group
+          label Email Address
+
+          input.form-control(
+            type='email'
+            name='email'
+            value=user.email
+          )
+
+        input.btn.btn-primary(
+          type='submit'
+          value='Save'
+        )

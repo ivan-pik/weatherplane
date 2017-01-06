@@ -44,7 +44,6 @@ UserSchema.statics.authenticate = function(userID, password, callback) {
         } else {
           return callback();
         }
-
       })
     })
 }
@@ -104,31 +103,11 @@ UserSchema.statics.updatePassword = function(authorised, userID, newPassword, ca
     User.findById(userID, function (err, user) {
       if (err) return callback(err);
       user.password = newPassword;
-      tank.save(function (err, updatedTank) {
+      user.save(function (err, updatedUser) {
         if (err) return handleError(err);
-        return callback(null, user);
+        return callback(null, updatedUser);
       });
     });
-
-    User.findOne({_userID: userID})
-    .exec(function (error, user) {
-      if(error) {
-        return callback(error);
-      } else if (!user) {
-        var err = new Error('User with email ' + email + ' wasn\'t found.');
-        // @todo: What status to send?
-        err.status = '401';
-        return callback(err);
-      } else {
-        user.password = newPassword;
-        user.save(function (err, userNew) {
-          if (err) return callback(err);
-          return callback(null, user);
-        });
-
-
-      }
-    })
 
   } else {
     var err = new Error("Not authorised to change user settings");
@@ -136,6 +115,26 @@ UserSchema.statics.updatePassword = function(authorised, userID, newPassword, ca
   }
 };
 
+
+// Update password
+// Never call this without authorising first!
+UserSchema.statics.updateEmail = function(authorised, userID, newEmail, callback) {
+  if (authorised) {
+
+    User.findById(userID, function (err, user) {
+      if (err) return callback(err);
+      user.email = newEmail;
+      user.save(function (err, updatedUser) {
+        if (err) return handleError(err);
+        return callback(null, updatedUser);
+      });
+    });
+
+  } else {
+    var err = new Error("Not authorised to change user settings");
+    return callback(err);
+  }
+};
 
 
 

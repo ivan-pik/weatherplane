@@ -51,6 +51,33 @@ function requiresLogin (req, res, next) {
   }
 }
 
+
+
+// ---------------------------------------------
+// needsLogin
+/*
+This is a new version of the function from above
+// @todo remove old version
+*/
+
+function needsLogin (req, res, next) {
+  if (req.session && req.session.userId) {
+    return next(null);
+  } else {
+    var err = new Error("You need to be logged-in to see this page");
+    err.status = 403;
+    res.render('user/login',
+      {
+        message: {
+          type: 'warning',
+          text: err
+        }
+      }
+    );
+  }
+}
+
+
 // ---------------------------------------------
 // newPasswordTokenCheck
 /*
@@ -128,4 +155,5 @@ function newPasswordTokenCheck (req, res, next) {
 
 module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
+module.exports.needsLogin = needsLogin;
 module.exports.newPasswordTokenCheck = newPasswordTokenCheck;
