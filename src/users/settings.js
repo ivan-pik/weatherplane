@@ -8,13 +8,6 @@ var router = express.Router();
 var User = require('./models/user.js');
 var mid = require('./middleware/users');
 
-// ---------------------------------------------
-// Utilities
-
-var database = require('./database');
-
-
-
 
 // ---------------------------------------------
 // Views
@@ -38,13 +31,13 @@ router.get('/', function (req, res) {
             email: user.email
           }
         };
-        return res.render('settings', templateData);
+        return res.render('users/settings', templateData);
       }
     });
   } else {
     var err = new Error("You need to login to see this page");
     err.status = 403;
-    res.render('user/login',
+    res.render('users/login',
       {
         message: {
           type: 'warning',
@@ -71,7 +64,7 @@ router.get('/change-email', mid.needsLogin, function (req, res) {
           email: user.email
         }
       };
-      return res.render('settings/change-email', templateData);
+      return res.render('users/change-email', templateData);
     }
   });
 
@@ -106,7 +99,7 @@ router.post('/change-email', mid.needsLogin, function (req, res) {
         text: "All fields need to be filled"
       }
     }
-    res.render('settings/change-password', templateData);
+    res.render('users/settings/change-password', templateData);
   }
 
 });
@@ -116,7 +109,7 @@ router.post('/change-email', mid.needsLogin, function (req, res) {
 // Settings "/settings/update-password"
 
 router.get('/change-password', mid.needsLogin, function (req, res) {
-  res.render('settings/change-password');
+  res.render('users/change-password');
 });
 
 // ---------------------------------------------
@@ -133,7 +126,7 @@ router.post('/change-password', mid.needsLogin, function (req, res) {
             text: "Wrong current password"
           }
         }
-        res.render('settings/change-password', templateData);
+        res.render('users/change-password', templateData);
       } else {
 
         if (req.body.newPassword == req.body.confirmPassword) {
@@ -158,7 +151,7 @@ router.post('/change-password', mid.needsLogin, function (req, res) {
               text: "New passwords don\'t match"
             }
           }
-          res.render('settings/change-password', templateData);
+          res.render('users/change-password', templateData);
         }
       }
     });
@@ -170,7 +163,7 @@ router.post('/change-password', mid.needsLogin, function (req, res) {
         text: "All fields need to be filled"
       }
     }
-    res.render('settings/change-password', templateData);
+    res.render('users/change-password', templateData);
   }
 
 });

@@ -4,7 +4,7 @@
 // Global App Settings
 
 var nodemailer = require('nodemailer');
-var envSettings = require('./envSettings.json');
+var envSettings = require('../envSettings.json');
 
 // ---------------------------------------------
 // Mail settings

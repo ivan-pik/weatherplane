@@ -22,7 +22,7 @@ router.get('/', mid.loggedOut, function (req, res) {
       }
     }
   }
-  res.render('user/login', prefill);
+  res.render('users/login', prefill);
 })
 
 // ---------------------------------------------
@@ -34,7 +34,7 @@ router.post('/', function (req, res, next) {
       if (error || !user) {
         var err = new Error('Wrong e-mail or password.');
         err.status = 401;
-        res.render('user/login',
+        res.render('users/login',
           {message: {
             type: 'warning',
             text: err
@@ -51,7 +51,7 @@ router.post('/', function (req, res, next) {
   } else {
     var err = new Error('All fields required');
     err.status = 401;
-    res.render('user/login',
+    res.render('users/login',
       {
         message: {
           type: 'warning',
@@ -71,7 +71,7 @@ router.post('/', function (req, res, next) {
 // Forgotten password "login/forgot-password"
 
 router.get('/forgot-password', mid.loggedOut, function (req, res) {
-  res.render('user/forgot-password');
+  res.render('users/forgot-password');
 });
 
 router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
@@ -81,7 +81,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
         var err = new Error('Sorry, user \"' + req.body.userID + '\" was not found');
         // @todo: correct status
         err.status = 404;
-        return res.render('user/forgot-password',
+        return res.render('users/forgot-password',
           {message: {
             type: 'warning',
             text: err
@@ -128,7 +128,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
               });
 
             }).then(function (sent) {
-              return res.render('user/login',
+              return res.render('users/login',
                 {
                   message: {
                     type: 'success',
@@ -145,7 +145,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
   } else {
     var err = new Error('Please enter your username');
     err.status = 401;
-    res.render('user/forgot-password',
+    res.render('users/forgot-password',
       {message: {
         type: 'warning',
         text: err
@@ -158,7 +158,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
 // Forgotten username "login/forgot-user-name"
 
 router.get('/forgot-user-name', mid.loggedOut, function (req, res) {
-  res.render('user/forgot-user-name');
+  res.render('users/forgot-user-name');
 });
 
 router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
@@ -168,7 +168,7 @@ router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
         var err = new Error('Sorry, user with email \"' + req.body.email + '\" was not found');
         // @todo: correct status
         err.status = 404;
-        return res.render('user/forgot-user-name',
+        return res.render('users/forgot-user-name',
           {message: {
             type: 'warning',
             text: err
@@ -181,7 +181,7 @@ router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
           "email": user.email
         }, req);
 
-        return res.render('user/forgot-user-name',
+        return res.render('users/forgot-user-name',
           {
             message: {
               type: 'success',
@@ -195,7 +195,7 @@ router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
   } else {
     var err = new Error('Please enter the email address');
     err.status = 401;
-    res.render('user/forgot-user-name',
+    res.render('users/forgot-user-name',
       {message: {
         type: 'warning',
         text: err
@@ -215,7 +215,7 @@ router.get('/new-password', [mid.loggedOut, mid.newPasswordTokenCheck], function
     }
   }
 
-  res.render('user/new-password', form);
+  res.render('users/new-password', form);
 });
 
 router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
@@ -224,7 +224,7 @@ router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
     if (req.body.password != req.body.confirmPassword) {
       var err = new Error('Passwords don\'t match');
       err.status = 400;
-      return res.render('user/new-password',
+      return res.render('users/new-password',
         {
           message: {
             type: 'warning',
@@ -268,7 +268,7 @@ router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
 
               // Meanwhile, keeping the same URL will do...
 
-              res.render('user/login', templateData);
+              res.render('users/login', templateData);
             }
           });
         }
@@ -280,7 +280,7 @@ router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
   } else {
     var err = new Error('All fields are required');
     err.status = 400;
-    res.render('user/new-password',
+    res.render('users/new-password',
       {
         message: {
           type: 'warning',

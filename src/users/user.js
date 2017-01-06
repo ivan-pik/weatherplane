@@ -8,10 +8,6 @@ var router = express.Router();
 var User = require('./models/user.js');
 var mid = require('./middleware/users');
 
-// ---------------------------------------------
-// Utilities
-
-var database = require('./database');
 
 
 // ---------------------------------------------
@@ -38,7 +34,7 @@ router.get('/:userId/', mid.requiresLogin , function (req, res, next) {
       if (error) {
         return next(error);
       } else {
-        return res.render('user/profile', {'name': user._userID});
+        return res.render('users/profile', {'name': user._userID});
       }
     })
 

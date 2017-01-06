@@ -12,7 +12,7 @@ var mailer = require('./mailer.js');
 // User registration page "/register"
 
 router.get('/',mid.loggedOut , function (req, res) {
-  res.render('user/register');
+  res.render('users/register');
 })
 
 // ---------------------------------------------
@@ -28,7 +28,7 @@ router.post('/', function (req, res, next) {
       if (req.body.password != req.body.confirmPassword) {
         var err = new Error('Passwords don\'t match');
         err.status = 400;
-        return res.render('user/register',
+        return res.render('users/register',
           {
             message: {
               type: 'warning',
@@ -68,7 +68,7 @@ router.post('/', function (req, res, next) {
             }
 
             err.status = 400;
-            return res.render('user/register',
+            return res.render('users/register',
               {
                 message: {
                   type: 'warning',
@@ -95,7 +95,7 @@ router.post('/', function (req, res, next) {
   } else {
     var err = new Error('All fields required');
     err.status = 400;
-    res.render('user/register',
+    res.render('users/register',
       {
         message: {
           type: 'warning',

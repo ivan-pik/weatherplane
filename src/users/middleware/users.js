@@ -35,7 +35,7 @@ function requiresLogin (req, res, next) {
   } else {
     var err = new Error("You need to login to see this page");
     err.status = 403;
-    res.render('user/login',
+    res.render('users/login',
       {
         message: {
           type: 'warning',
@@ -66,7 +66,7 @@ function needsLogin (req, res, next) {
   } else {
     var err = new Error("You need to be logged-in to see this page");
     err.status = 403;
-    res.render('user/login',
+    res.render('users/login',
       {
         message: {
           type: 'warning',

@@ -42,14 +42,7 @@ app.use(function(req, res, next) {
   next();
 })
 
-// ---------------------------------------------
-// Controllers
-var user = require('./user');
-var register = require('./register');
-var login = require('./login');
-var logout = require('./logout');
-var settings = require('./settings');
-var home = require('./home');
+
 
 // ---------------------------------------------
 // Parse incoming requests
@@ -69,12 +62,13 @@ app.use('/static', express.static(__dirname + '/public'));
 
 // ---------------------------------------------
 // Routing routes
-app.use('/', home)
-app.use('/user', user)
-app.use('/settings', settings)
-app.use('/register', register)
-app.use('/login', login)
-app.use('/logout', logout)
+app.use('/', require('./home'))
+
+app.use('/user', require('./users/user'))
+app.use('/settings', require('./users/settings'))
+app.use('/register', require('./users/register'))
+app.use('/login', require('./users/login'))
+app.use('/logout', require('./users/logout'))
 
 
 
