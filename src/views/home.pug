@@ -3,19 +3,12 @@ extends layout.pug
 block content
   h1.greeting Search for a place
 
-    form(
-       action='/'
-       method='POST'
-    )
-
-      input.form-control(
-        type='text'
-        name='location'
-        placeholder='Enter a location'
-        value= prefill || ''
-      )
-
-      input.btn.btn-primary(
-        type='submit'
-        value='Search'
-      )
+    #floating-panel
+      input#address.form-control(
+        type='textbox'
+        )
+      input#submit.btn.btn-primary(
+        type='button'
+        value='Geocode'
+        )
+    #map

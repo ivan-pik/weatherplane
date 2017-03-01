@@ -27,3 +27,7 @@ body {
   margin-bottom: 2em;
   color: #fff;
   font-family: 'Farsan'; }
+
+#map {
+  height: 500px;
+}
