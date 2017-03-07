@@ -1,206 +1,47 @@
-'use strict'; // eslint-disable-line
-
 const webpack = require('webpack');
-const qs = require('qs');
 const autoprefixer = require('autoprefixer');
-const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanPlugin = require('clean-webpack-plugin');
 
 const config = {
-  "entry": {
-    "main": [
-      "./scripts/main.js",
-      "./styles/main.scss"
-    ],
-    "customizer": [
-      "./scripts/customizer.js"
-    ]
-  },
-  "watch": [
-    "templates/**/*.php",
-    "src/**/*.php"
+  entry:
+  [
+    "./src/frontend/index.js",
+    "./src/scss/main.scss"
   ],
-  "publicPath": "/app/themes/sage",
-  "devUrl": "http://example.dev",
-  "proxyUrl": "http://localhost:3000",
-  "cacheBusting": "[name]_[hash:8]"
-};
-
-const assetsFilenames = (config.enabled.cacheBusting) ? config.cacheBusting : '[name]';
-const sourceMapQueryStr = (config.enabled.sourceMaps) ? '+sourceMap' : '-sourceMap';
-
-const jsLoader = {
-  test: /\.js$/,
-  exclude: [/(node_modules|bower_components)(?![/|\\](bootstrap|foundation-sites))/],
-  use: [{
-    loader: 'buble',
-    options: { objectAssign: 'Object.assign' },
-  }],
-};
-
-if (config.enabled.watcher) {
-  jsLoader.use.unshift('monkey-hot?sourceType=module');
-}
-
-let webpackConfig = {
-  context: config.paths.assets,
-  entry: config.entry,
-  devtool: (config.enabled.sourceMaps ? '#source-map' : undefined),
   output: {
-    path: config.paths.dist,
-    publicPath: config.publicPath,
-    filename: `scripts/${assetsFilenames}.js`,
+    filename: "./src/public/js/scripts.js"
   },
   module: {
-    rules: [
-      jsLoader,
-      {
-        enforce: 'pre',
-        test: /\.js?$/,
-        include: config.paths.assets,
-        loader: 'eslint',
-      },
-      {
-        test: /\.css$/,
-        include: config.paths.assets,
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style',
-          loader: [
-            `css?${sourceMapQueryStr}`,
-            'postcss',
-          ],
-        }),
-      },
-      {
-        test: /\.scss$/,
-        include: config.paths.assets,
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style',
-          loader: [
-            `css?${sourceMapQueryStr}`,
-            'postcss',
-            `resolve-url?${sourceMapQueryStr}`,
-            `sass?${sourceMapQueryStr}`,
-          ],
-        }),
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg|ico)$/,
-        include: config.paths.assets,
-        use: [
-          `file?${qs.stringify({
-            name: `[path]${assetsFilenames}.[ext]`,
-          })}`,
-        ],
-      },
-      {
-        test: /\.(ttf|eot)$/,
-        include: config.paths.assets,
-        loader: `file?${qs.stringify({
-          name: `[path]${assetsFilenames}.[ext]`,
-        })}`,
-      },
-      {
-        test: /\.woff2?$/,
-        include: config.paths.assets,
-        loader: `url?${qs.stringify({
-          limit: 10000,
-          mimetype: 'application/font-woff',
-          name: `[path]${assetsFilenames}.[ext]`,
-        })}`,
-      },
-      {
-        test: /\.(ttf|eot|woff2?|png|jpe?g|gif|svg)$/,
-        include: /node_modules|bower_components/,
-        loader: 'file',
-        options: {
-          name: `vendor/${config.cacheBusting}.[ext]`,
-        },
-      },
-    ],
-  },
-  resolve: {
-    modules: [
-      config.paths.assets,
-      'node_modules',
-      'bower_components',
-    ],
-    enforceExtension: false,
-  },
-  resolveLoader: {
-    moduleExtensions: ['-loader'],
-  },
-  externals: {
-    jquery: 'jQuery',
+    rules:
+      [
+        {
+          test: /\.scss$/,
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              `css-loader`,
+              'postcss-loader',
+              `sass-loader`,
+            ],
+          }),
+        }
+      ]
+
   },
   plugins: [
-    new CleanPlugin([config.paths.dist], {
-      root: config.paths.root,
-      verbose: false,
-    }),
-    new ExtractTextPlugin({
-      filename: `styles/${assetsFilenames}.css`,
-      allChunks: true,
-      disable: (config.enabled.watcher),
-    }),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-      Tether: 'tether',
-      'window.Tether': 'tether',
-    }),
-    new webpack.DefinePlugin({
-      WEBPACK_PUBLIC_PATH: (config.enabled.watcher)
-        ? JSON.stringify(config.publicPath)
-        : false,
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: config.enabled.optimize,
-      debug: config.enabled.watcher,
-      stats: { colors: true },
-    }),
+    new ExtractTextPlugin("./src/public/css/styles.css"),
     new webpack.LoaderOptionsPlugin({
       test: /\.s?css$/,
       options: {
-        output: { path: config.paths.dist },
-        context: config.paths.assets,
+        output: { path: './test/' },
         postcss: [
           autoprefixer({ browsers: ['last 2 versions', 'android 4', 'opera 12'] }),
         ],
       },
     }),
-    new webpack.LoaderOptionsPlugin({
-      test: /\.js$/,
-      options: {
-        eslint: { failOnWarning: false, failOnError: true },
-      },
-    }),
   ],
-};
-
-/* eslint-disable global-require */ /** Let's only load dependencies as needed */
-
-
-
-if (config.env.production) {
-  webpackConfig.plugins.push(new webpack.NoErrorsPlugin());
+  watch: true
 }
 
-if (config.enabled.cacheBusting) {
-  const WebpackAssetsManifest = require('webpack-assets-manifest');
-
-  webpackConfig.plugins.push(
-    new WebpackAssetsManifest({
-      output: 'assets.json',
-      space: 2,
-      writeToDisk: false,
-      assets: config.manifest,
-      replacer: require('./util/assetManifestsFormatter'),
-    })
-  );
-}
-
-
-
-module.exports = webpackConfig;
+module.exports = config;

@@ -1,1 +1,3 @@
-alert('hiii!');
+require('./map');
+
+console.log('app loaded');
