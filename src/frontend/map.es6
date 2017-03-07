@@ -2,7 +2,7 @@ var mapsapi = require( 'google-maps-api' )( 'AIzaSyBTL50DdKgmlhWvZ7b-kbCFt4N1hdZ
 
 mapsapi().then( function( maps ) {
 
-
+console.log(maps);
   function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
       zoom: 8,

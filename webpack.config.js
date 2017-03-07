@@ -6,7 +6,7 @@ const CleanPlugin = require('clean-webpack-plugin');
 const config = {
   entry:
   [
-    "./src/frontend/index.js",
+    "./src/frontend/index",
     "./src/scss/main.scss"
   ],
   output: {
@@ -25,9 +25,24 @@ const config = {
               `sass-loader`,
             ],
           }),
-        }
+        },
+        {
+         test: /\.es6$/,
+         exclude: /node_modules/,
+         loader: 'babel-loader',
+         query: {
+           presets: ['react', 'es2015']
+         }
+       },
+       {
+          test: /\.vue$/,
+          use: 'vue-loader',
+        },
       ]
 
+  },
+  resolve: {
+   extensions: ['*', '.js', '.es6']
   },
   plugins: [
     new ExtractTextPlugin("./src/public/css/styles.css"),
