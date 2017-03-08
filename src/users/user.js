@@ -9,34 +9,33 @@ var User = require('./models/user.js');
 var mid = require('./middleware/users');
 
 
-
-// ---------------------------------------------
-// Views
-// ---------------------------------------------
-
-// ---------------------------------------------
-// User home page "/"
-
-router.get('/', mid.loggedOut, function (req, res) {
-  res.redirect('/login');
-})
-
-
-
-
-
 // ---------------------------------------------
 // User profile page "/john-smith"
 
-router.get('/:userId/', mid.requiresLogin , function (req, res, next) {
-  User.findById(req.session.userId)
-    .exec(function (error, user) {
-      if (error) {
-        return next(error);
-      } else {
-        return res.render('users/profile', {'name': user._userID});
-      }
-    })
+router.get('/:userId/', mid.apiAuth , function (req, res, next) {
+  console.log(req.params.userId);
+
+  User.findByUserID(req.params.userId, function (error, user) {
+    if (error) {
+      return res.json({
+        errors: [
+          {
+            success : false,
+            title : "This user does not exist!"
+          }
+        ]
+      });
+    } else {
+      return res.json({
+        errors: [
+          {
+            title : "You are authorised to see this apparently and this user exists"
+          }
+        ]
+      });
+      // return res.render('users/profile', {'name': user._userID});
+    }
+  });
 
 });
 

@@ -1,5 +1,6 @@
 'use strict';
 
+//@todo Turn this into pure back end API, remove all template rendering etc.
 
 // ---------------------------------------------
 // Modules
@@ -9,6 +10,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var envSettings = require('./envSettings.json');
+var jwt = require('jsonwebtoken');
 
 // ---------------------------------------------
 // Utilities
@@ -42,21 +44,16 @@ app.use(function(req, res, next) {
   next();
 })
 
+app.set('superSecret', envSettings.secret); // secret variable
+
+
+
 
 
 // ---------------------------------------------
 // Parse incoming requests
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 
-// ---------------------------------------------
-// Have fun with PUG templates
-app.set('view engine', 'pug');
-app.set('views', __dirname  + '/views');
-
-// ---------------------------------------------
-// Serve static files
-app.use('/static', express.static(__dirname + '/public'));
 
 
 
@@ -64,11 +61,14 @@ app.use('/static', express.static(__dirname + '/public'));
 // Routing routes
 app.use('/', require('./home'))
 
-app.use('/user', require('./users/user'))
+app.use('/users', require('./users/user'))
+app.use('/users', require('./users/register'))
 app.use('/settings', require('./users/settings'))
-app.use('/register', require('./users/register'))
+
 app.use('/login', require('./users/login'))
 app.use('/logout', require('./users/logout'))
+
+app.use('/authenticate', require('./users/authenticate'))
 
 
 
@@ -78,8 +78,8 @@ app.use('/logout', require('./users/logout'))
 
 database.connect();
 
-app.listen(80, function () {
-  console.log('Listening on port 80!');
+app.listen(3000, function () {
+  console.log('Listening on port 3000!');
   console.log('\u0007');
 });
 
@@ -89,9 +89,13 @@ app.listen(80, function () {
 // define as the last app.use callback
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
+  res.json({
+    errors : [
+      {
+        code: "E00",
+        title : err.message
+      }
+    ]
   });
 });
 
@@ -99,3 +103,5 @@ app.use(function(err, req, res, next) {
 app.get('*', function(req, res){
   res.send('what???', 404);
 });
+
+module.exports = app;

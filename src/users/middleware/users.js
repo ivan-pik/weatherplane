@@ -1,5 +1,46 @@
 'use strict';
 var Token = require('../models/token.js');
+var jwt = require('jsonwebtoken');
+var envSettings = require('../../envSettings.json');
+
+
+
+// ---------------------------------------------
+// API token auth
+
+function apiAuth (req, res, next) {
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token || req.headers['x-access-token'];
+  // decode token
+  if (token) {
+
+    // verifies secret and checks exp
+    jwt.verify(token, envSettings.secret, function(err, decoded) {
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' });
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        next();
+      }
+    });
+
+  } else {
+
+    // if there is no token
+    // return an error
+    return res.status(403).send({
+        success: false,
+        message: 'No token provided.'
+    });
+
+  }
+}
+
+
+
+
+
 
 // ---------------------------------------------
 // loggedOut
@@ -26,28 +67,17 @@ user's profile, show error.
 
 function requiresLogin (req, res, next) {
   if (req.session && req.session.userId) {
-    if (req.params.userId != req.session.userSlug) {
-      var err = new Error("This is not your profile. Please log out and log in as \"" + req.params.userId + "\" to access this profile.");
-      err.status = 403;
-      return next(err);
-    }
     return next();
   } else {
-    var err = new Error("You need to login to see this page");
-    err.status = 403;
-    res.render('users/login',
-      {
-        message: {
-          type: 'warning',
-          text: err
-        },
-        form: {
-          prefill: {
-            userId: req.params.userId
-          }
+    // return next();
+    res.status(403).json({
+      errors : [
+        {
+          code: "E01",
+          title : "Not authorised to access this data"
         }
-      }
-    );
+      ]
+    });
   }
 }
 
@@ -157,3 +187,4 @@ module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
 module.exports.needsLogin = needsLogin;
 module.exports.newPasswordTokenCheck = newPasswordTokenCheck;
+module.exports.apiAuth = apiAuth;

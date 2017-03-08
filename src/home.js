@@ -11,7 +11,10 @@ var router = express.Router();
 // ---------------------------------------------
 // define the home page route
 router.get('/', function (req, res) {
-  res.render('home');
+  res.json({
+    success : true,
+    message : "hi"
+  });
 })
 
 
