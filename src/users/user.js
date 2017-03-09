@@ -27,11 +27,8 @@ router.get('/:userId/', mid.apiAuth , function (req, res, next) {
       });
     } else {
       return res.json({
-        errors: [
-          {
-            title : "You are authorised to see this apparently and this user exists"
-          }
-        ]
+        success : true,
+        message : "you can now view secret data, ohoho"
       });
       // return res.render('users/profile', {'name': user._userID});
     }
