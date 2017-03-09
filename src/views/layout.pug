@@ -1,6 +1,7 @@
 include ./partials/_head.pug
 include ./partials/_navigation.pug
 body
+  #app
   block message
     if message
       .alert(class='alert-' + message.type)

@@ -2,6 +2,10 @@
 src/public/css
 src/public/js
 
+.DS_Store
+dist/
+npm-debug.log
+yarn-error.log
 
 # Env specific files
 src/envSettings.json
