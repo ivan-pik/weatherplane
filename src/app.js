@@ -74,14 +74,15 @@ app.use('/authenticate', require('./users/authenticate'))
 
 
 // ---------------------------------------------
-// Connect to the DB and if OK listen...
+// Connect to the DB //@todo and if OK listen...
 
 database.connect();
 
-app.listen(3000, function () {
-  console.log('Listening on port 3000!');
+var listener = app.listen(3000, function(){
+	console.log('Listening on port ' + listener.address().port);
   console.log('\u0007');
 });
+
 
 
 // ---------------------------------------------

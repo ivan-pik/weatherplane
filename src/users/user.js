@@ -28,7 +28,10 @@ router.get('/:userId/', mid.apiAuth , function (req, res, next) {
     } else {
       return res.json({
         success : true,
-        message : "you can now view secret data, ohoho"
+				data : {
+					userID : user._userID,
+					email : user.email
+				}
       });
       // return res.render('users/profile', {'name': user._userID});
     }
