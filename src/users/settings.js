@@ -15,6 +15,7 @@ var mid = require('./middleware/users');
 
 // ---------------------------------------------
 // Settings "/settings"
+// @todo: Rewrite to JSON API
 
 router.get('/', function (req, res) {
   // User is logged in
@@ -51,6 +52,7 @@ router.get('/', function (req, res) {
 
 // ---------------------------------------------
 // Settings "/settings/change-email"
+// @todo: Rewrite to JSON API
 
 router.get('/change-email', mid.needsLogin, function (req, res) {
 
@@ -72,6 +74,7 @@ router.get('/change-email', mid.needsLogin, function (req, res) {
 
 // ---------------------------------------------
 // Settings "/settings/change-email"
+// @todo: Rewrite to JSON API
 
 router.post('/change-email', mid.needsLogin, function (req, res) {
 
@@ -107,6 +110,7 @@ router.post('/change-email', mid.needsLogin, function (req, res) {
 
 // ---------------------------------------------
 // Settings "/settings/update-password"
+// @todo: Rewrite to JSON API
 
 router.get('/change-password', mid.needsLogin, function (req, res) {
   res.render('users/change-password');
@@ -114,6 +118,7 @@ router.get('/change-password', mid.needsLogin, function (req, res) {
 
 // ---------------------------------------------
 // Settings "/settings/change-email"
+// @todo: Rewrite to JSON API
 
 router.post('/change-password', mid.needsLogin, function (req, res) {
 
