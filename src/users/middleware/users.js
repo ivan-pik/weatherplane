@@ -21,19 +21,36 @@ function apiAuth (req, res, next) {
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
+
+        // Make sure that authenticated user can only see its own data
+        if (req.params.userId != req.decoded._doc._userID) {
+          return res.json({
+            success : false,
+            errors : [
+              {
+                title : "Not permitted to view this resource",
+                code : "no-rights-to-view",
+                description : "Authentication was successful, but you are not allowed to view this resource."
+              }
+            ]
+          });
+        }
         next();
       }
     });
-
   } else {
-
     // if there is no token
     // return an error
     return res.status(403).send({
         success: false,
-        message: 'No token provided.'
+        message: 'No token provided.',
+        errors: [
+          {
+            title : "No token provided",
+            code : "no-token-provided"
+          }
+        ]
     });
-
   }
 }
 
