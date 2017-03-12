@@ -16,6 +16,8 @@ var envSettings = require('../envSettings.json');
 
 
 router.post('/', function (req, res, next) {
+  console.log("Authentication is happening");
+  console.log(req.body);
   if (req.body.userID && req.body.password) {
     User.authenticate(req.body.userID, req.body.password, function (error, user) {
       // if user is not found or password is wrong
@@ -24,15 +26,14 @@ router.post('/', function (req, res, next) {
         res.status(401).json(
           {
             errors : [{
-              code : "A00",
+              code : "wrong-userID-or-password",
               title : "Wrong combination of \'userID\' and \'password\'"
             }]
           }
         );
       // if user is found and password is right
       } else {
-        req.session.userId = user._id;
-        req.session.userSlug = user._userID;
+
 
 
         // create a token
@@ -50,7 +51,7 @@ router.post('/', function (req, res, next) {
       }
     });
 
-
+  // Some data not provided
   } else {
     let errors = [{
       code : "A01",

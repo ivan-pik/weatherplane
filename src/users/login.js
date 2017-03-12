@@ -9,71 +9,7 @@ var User = require('./models/user.js');
 var Token = require('./models/token.js');
 var mailer = require('./mailer.js');
 
-// ---------------------------------------------
-// User registration page "/register"
-
-router.get('/', mid.loggedOut, function (req, res) {
-  if (req.query && req.query.username) {
-    var prefill = {
-      form: {
-        prefill: {
-          userId: req.query.username
-        }
-      }
-    }
-  }
-  res.render('users/login', prefill);
-})
-
-// ---------------------------------------------
-// User login page "/login" POST
-
-router.post('/', function (req, res, next) {
-  if (req.body.userID && req.body.password) {
-    User.authenticate(req.body.userID, req.body.password, function (error, user) {
-      if (error || !user) {
-        var err = new Error('Wrong e-mail or password.');
-        err.status = 401;
-        res.render('users/login',
-          {message: {
-            type: 'warning',
-            text: err
-          }}
-        );
-      } else {
-        req.session.userId = user._id;
-        req.session.userSlug = user._userID;
-        return res.redirect('/user/'+user._userID);
-      }
-    });
-
-
-  } else {
-    var err = new Error('All fields required');
-    err.status = 401;
-    res.render('users/login',
-      {
-        message: {
-          type: 'warning',
-          text: err
-        },
-        form: {
-          prefill: {
-            userId: req.body.userID || ''
-          }
-        }
-      }
-    );
-  }
-})
-
-// ---------------------------------------------
-// Forgotten password "login/forgot-password"
-
-router.get('/forgot-password', mid.loggedOut, function (req, res) {
-  res.render('users/forgot-password');
-});
-
+// @todo: Rewrite to JSON API
 router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
   if (req.body.userID) {
     User.findByUserID(req.body.userID, function (error, user) {
@@ -156,6 +92,7 @@ router.post('/forgot-password', mid.loggedOut, function (req, res, next) {
 
 // ---------------------------------------------
 // Forgotten username "login/forgot-user-name"
+// @todo: Rewrite to JSON API
 
 router.get('/forgot-user-name', mid.loggedOut, function (req, res) {
   res.render('users/forgot-user-name');
@@ -204,6 +141,11 @@ router.post('/forgot-user-name', mid.loggedOut, function (req, res, next) {
   }
 });
 
+
+
+
+// @todo: Rewrite to JSON API
+
 router.get('/new-password', [mid.loggedOut, mid.newPasswordTokenCheck], function (req, res) {
   // this is so I can validate it again after sending
   // @todo I would be better off just making the form post
@@ -217,6 +159,9 @@ router.get('/new-password', [mid.loggedOut, mid.newPasswordTokenCheck], function
 
   res.render('users/new-password', form);
 });
+
+
+// @todo: Rewrite to JSON API
 
 router.post('/new-password', mid.newPasswordTokenCheck, function (req, res) {
   // Handle input errors first

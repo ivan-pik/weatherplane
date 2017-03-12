@@ -23,27 +23,30 @@ var settings = require('./settings.json');
 app.locals.title = settings.frontend.appName;
 app.locals.siteURL = (envSettings.env == 'DEVEL') ? envSettings.devel.siteURL : envSettings.production.siteURL;
 
+// ---------------------------------------------
+// Add headers
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
+});
+
+
 
 // ---------------------------------------------
-// Use sessions
-app.use(session({
-  secret: 'Hope it is not raining tomorrow',
-  resave: true,
-  saveUninitialized: false,
-  store: new MongoStore({
-    mongooseConnection: database.connection
-  })
-}))
-
-// ---------------------------------------------
-// Variables available for the whole app
-
-app.use(function(req, res, next) {
-  res.locals.currentUserSlug = req.session.userSlug;
-  res.locals.currentUser = req.session.userId;
-  next();
-})
-
 app.set('superSecret', envSettings.secret); // secret variable
 
 
@@ -66,7 +69,6 @@ app.use('/users', require('./users/register'))
 app.use('/settings', require('./users/settings'))
 
 app.use('/login', require('./users/login'))
-app.use('/logout', require('./users/logout'))
 
 app.use('/authenticate', require('./users/authenticate'))
 
@@ -93,7 +95,7 @@ app.use(function(err, req, res, next) {
   res.json({
     errors : [
       {
-        code: "E00",
+        code: "application-error",
         title : err.message
       }
     ]
@@ -102,7 +104,16 @@ app.use(function(err, req, res, next) {
 
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get('*', function(req, res){
-  res.send('what???', 404);
+  res.status(404).json(
+    {
+      errors: [
+        {
+          code: "nothing-here",
+          title: "(404) No resource here"
+        }
+      ]
+    }
+  );
 });
 
 module.exports = app;
