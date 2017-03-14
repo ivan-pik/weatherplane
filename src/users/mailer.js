@@ -20,10 +20,10 @@ var transporter = nodemailer.createTransport({
 function sendRegistrationConfirmation (req) {
   // @todo better copy
   var text = 'This is to confirm that your user account \"'
-    + req.session.userSlug + '\" was created.';
+    + req.body.userID + '\" was created.';
   // @todo better copy
   var html = '<p>This is to confirm that your user account <strong>'
-    + req.session.userSlug + '</strong> was created.</p>';
+    + req.body.userID + '</strong> was created.</p>';
 
   // @todo ask for email confirmation
 
