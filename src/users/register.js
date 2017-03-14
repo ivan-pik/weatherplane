@@ -33,7 +33,7 @@ router.post('/', function (req, res, next) {
         if (error) {
           let errors = [];
           errors.push({
-            code: "U04",
+            code: "username-or-email-already-registered",
             title: "User with this username or email already exists"
           });
 
@@ -42,14 +42,15 @@ router.post('/', function (req, res, next) {
             // Duplicated _userID
             if (error.errmsg.includes("_userID_1")) {
               errors.push({
-                code: "U05",
+                code: "username-exists",
                 title: "User with this username already exists"
               });
             }
             // Duplicated email
+            // @this doesn't seem to work
             else if (error.errmsg.includes("email_1")) {
               errors.push({
-                code: "U06",
+                code: "user-email-exists",
                 title: "User with this email already exists"
               });
             }
@@ -78,20 +79,20 @@ router.post('/', function (req, res, next) {
   // Some data is missing
   } else {
     var errorMissingUserData = {
-      code: "U00",
+      code: "missing-data",
       title: "Not all required data were provided",
       description: "Required fields are: \'userID\', \'email\', \'password\'."
     };
     var errorMissingUserID = {
-      code: "U01",
+      code: "missing-userID",
       title: "Missing \'userID\'"
     };
     var errorMissingEmail = {
-      code: "U02",
+      code: "missing-email",
       title: "Missing \'email\'"
     };
     var errorMissingPassword = {
-      code: "U03",
+      code: "missing-password",
       title: "Missing \'password\'"
     };
 
