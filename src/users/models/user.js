@@ -97,22 +97,21 @@ UserSchema.pre('save', function(next) {
 
 // Update password
 // Never call this without authorising first!
-UserSchema.statics.updatePassword = function(authorised, userID, newPassword, callback) {
-  if (authorised) {
+UserSchema.statics.updatePassword = function(userID, newPassword, callback) {
 
-    User.findById(userID, function (err, user) {
+
+
+    User.findOne({_userID: userID}, function (err, user) {
       if (err) return callback(err);
+
       user.password = newPassword;
       user.save(function (err, updatedUser) {
-        if (err) return handleError(err);
+        if (err) return callback(err);
         return callback(null, updatedUser);
       });
     });
 
-  } else {
-    var err = new Error("Not authorised to change user settings");
-    return callback(err);
-  }
+
 };
 
 

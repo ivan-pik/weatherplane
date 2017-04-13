@@ -48,9 +48,11 @@ function sendLostPassword (content, req, callback) {
   // @todo add link with token allowing password change
   // @todo better copy
 
-  var text = 'Required password reset for ' + content._userID + 'You can set a new password within 1 hour at ' + req.app.locals.siteURL + 'login/new-password?token=' + content.token + '&userID=' + content._userID;
+    console.log(req.app.locals);
+
+  var text = 'Required password reset for ' + content._userID + 'You can set a new password within 1 hour at ' + req.app.locals.siteURL + 'reset-password?token=' + content.token + '&userID=' + content._userID;
   // @todo better copy, probably show full link as well in case mail client fails to make a HTML link
-  var html = '<p>Required password reset for user <strong>' + content._userID + '</strong></p><p>You can set a new password within 1 hour <a href=\"' + req.app.locals.siteURL + 'login/new-password?token=' + content.token + '&userID=' + content._userID + '\">here</a></p>';
+  var html = '<p>Required password reset for user <strong>' + content._userID + '</strong></p><p>You can set a new password within 1 hour <a href=\"' + req.app.locals.siteURL + 'reset-password?token=' + content.token + '&userID=' + content._userID + '\">here</a></p>';
 
   var emailAddress = (envSettings.env == 'DEVEL') ? envSettings.devel.testEmail : content.email;
 

@@ -8,6 +8,9 @@ var envSettings = require('../../envSettings.json');
 // ---------------------------------------------
 // API token auth
 
+// @todo: change this to only verify the token, not to check if allowed to see resource
+// @todo: Then use it in 'identify'
+
 function apiAuth (req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -125,77 +128,6 @@ function needsLogin (req, res, next) {
 }
 
 
-// ---------------------------------------------
-// newPasswordTokenCheck
-/*
-This checks if user has a valid token to be
-able to change a password on "login/new-password".
-This can be used to prevent displaying this page
-to missing/invalid tokens and for authenticating the POST
-request for the actual change.
-*/
-function newPasswordTokenCheck (req, res, next) {
-
-    var credentials = {}
-
-    if (req.query && req.query.token && req.query.userID) {
-      credentials = {
-        token: req.query.token,
-        userID: req.query.userID
-      }
-    } else if (req.body && req.body.token && req.body.userID) {
-      credentials = {
-        token: req.body.token,
-        userID: req.body.userID
-      }
-    } else {
-      var error = new Error("None or incomplete token or username in the link");
-      // @todo set correct status
-      error.status = '401';
-      next(error);
-    }
-
-  if (credentials) {
-    function getTimeStamp(str) {
-        return str.split('-')[1];
-    }
-
-    // First just check the timestamp of the request
-    // so it can be refused immediately
-    var timestamp = getTimeStamp(credentials.token),
-        currentTimeStamp = Math.floor(Date.now() / 1000),
-        expiryLength = {
-          "value": 60, //minutes @todo, read from settings.json
-          "toSeconds": function () {
-            return (this.value * 60)
-          }
-        },
-        timeDifference = currentTimeStamp - timestamp;
-
-    // If too old
-    if (timeDifference > expiryLength.toSeconds()) {
-      var error = new Error("It\'s too late to reset your password. Please request a new password reset.");
-      // @todo set correct status
-      error.status = '401';
-      next(error);
-    // Still fresh, let's check DB for it
-    } else {
-      Token.authenticate(credentials.userID, credentials.token, function (error, token) {
-        if (error || !token) {
-          var err = new Error('This link is not valid. Please request a new password reset.');
-          err.status = 401;
-          next(err);
-        } else {
-          next();
-        }
-      });
-    }
-
-  } else {
-    // When no token is present, just go to "/login"
-    return res.redirect('/login');
-  }
-}
 
 // ---------------------------------------------
 // Module exports
@@ -203,5 +135,4 @@ function newPasswordTokenCheck (req, res, next) {
 module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
 module.exports.needsLogin = needsLogin;
-module.exports.newPasswordTokenCheck = newPasswordTokenCheck;
 module.exports.apiAuth = apiAuth;

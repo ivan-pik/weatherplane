@@ -18,6 +18,16 @@ router.get('/', function (req, res) {
 })
 
 
+// ---------------------------------------------
+// define the home page route
+router.get('/', function (req, res) {
+    res.json({
+        success : true,
+        message : "hi"
+    });
+})
+
+
 
 // ---------------------------------------------
 // Module exports

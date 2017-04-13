@@ -20,8 +20,14 @@ var database = require('./database');
 // ---------------------------------------------
 // Local App Settings
 var settings = require('./settings.json');
+
+// @todo: move this to settings
+const port = 4000;
+
 app.locals.title = settings.frontend.appName;
-app.locals.siteURL = (envSettings.env == 'DEVEL') ? envSettings.devel.siteURL : envSettings.production.siteURL;
+
+// @todo: fix condition where port is not set
+app.locals.siteURL = ( (envSettings.env == 'DEVEL') ? envSettings.devel.siteURL : envSettings.production.siteURL ) + ":" + port + "/";
 
 // ---------------------------------------------
 // Add headers
@@ -48,6 +54,7 @@ app.use(bodyParser.json());
 app.use('/', require('./home'))
 
 app.use('/users', require('./users/user'))
+app.use('/identify', require('./users/identify'))
 app.use('/register', require('./users/register'))
 app.use('/settings', require('./users/settings'))
 
@@ -58,12 +65,15 @@ app.use('/authenticate', require('./users/authenticate'))
 
 
 
+
+
+
 // ---------------------------------------------
 // Connect to the DB //@todo and if OK listen...
 
 database.connect();
 
-var listener = app.listen(3000, function(){
+var listener = app.listen(port, function(){
 	console.log('Listening on port ' + listener.address().port);
   console.log('\u0007');
 });
