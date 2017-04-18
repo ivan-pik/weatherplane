@@ -13,41 +13,6 @@ var mid = require('./middleware/users');
 // Views
 // ---------------------------------------------
 
-// ---------------------------------------------
-// Settings "/settings"
-// @todo: Rewrite to JSON API
-
-router.get('/', function (req, res) {
-  // User is logged in
-  if (res.locals.currentUser) {
-    console.log(req);
-    User.findByUserID(req.session.userSlug, function (error, user) {
-      if (error || !user) {
-        // @todo handle error
-        console.log(error);
-      } else {
-        console.log(user);
-        let templateData = {
-          user: {
-            email: user.email
-          }
-        };
-        return res.render('users/settings', templateData);
-      }
-    });
-  } else {
-    var err = new Error("You need to login to see this page");
-    err.status = 403;
-    res.render('users/login',
-      {
-        message: {
-          type: 'warning',
-          text: err
-        }
-      }
-    );
-  }
-})
 
 
 // ---------------------------------------------
