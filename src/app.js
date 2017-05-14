@@ -32,9 +32,11 @@ app.locals.siteURL = ( (envSettings.env == 'DEVEL') ? envSettings.devel.siteURL 
 // ---------------------------------------------
 // Add headers
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
+	res.header('Access-Control-Allow-Methods', '*');
+	res.setHeader('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+	res.header('Access-Control-Max-Age', '1000');
   next();
 });
 
@@ -57,6 +59,7 @@ app.use('/users', require('./users/user'))
 app.use('/identify', require('./users/identify'))
 app.use('/register', require('./users/register'))
 app.use('/settings', require('./users/settings'))
+app.use('/places', require('./places/places'))
 
 app.use('/login', require('./users/login'))
 

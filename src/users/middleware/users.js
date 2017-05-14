@@ -1,8 +1,8 @@
 'use strict';
 var Token = require('../models/token.js');
-var jwt = require('jsonwebtoken');
-var envSettings = require('../../envSettings.json');
 
+
+var checkToken = require('../checkToken.js');
 
 
 // ---------------------------------------------
@@ -12,49 +12,25 @@ var envSettings = require('../../envSettings.json');
 // @todo: Then use it in 'identify'
 
 function apiAuth (req, res, next) {
+
   // check header or url parameters or post parameters for token
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
   // decode token
-  if (token) {
+		// verifies secret and checks exp
+		checkToken(function (err, token) {
+			if (err) {
+				return res.json({ success: false, message: 'Failed to authenticate token.' });
+			} else if (token) {
+				req.decoded = decoded;
+				res.header('Access-Control-Allow-Origin', '*');
+				res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
+				res.header('Access-Control-Allow-Methods', '*');
+				res.header('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+				res.header('Access-Control-Max-Age', '1000');
+				next();
+			}
+		});
 
-    // verifies secret and checks exp
-    jwt.verify(token, envSettings.secret, function(err, decoded) {
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;
 
-        // Make sure that authenticated user can only see its own data
-        if (req.params.userId != req.decoded._doc._userID) {
-          return res.json({
-            success : false,
-            errors : [
-              {
-                title : "Not permitted to view this resource",
-                code : "no-rights-to-view",
-                description : "Authentication was successful, but you are not allowed to view this resource."
-              }
-            ]
-          });
-        }
-        next();
-      }
-    });
-  } else {
-    // if there is no token
-    // return an error
-    return res.status(403).send({
-        success: false,
-        message: 'No token provided.',
-        errors: [
-          {
-            title : "No token provided",
-            code : "no-token-provided"
-          }
-        ]
-    });
-  }
 }
 
 

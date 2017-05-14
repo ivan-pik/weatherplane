@@ -55,14 +55,6 @@ router.get('/:userId/', mid.apiAuth , function (req, res, next) {
 
 });
 
-// ---------------------------------------------
-// User location page "/john-smith/yatton"
-
-router.get('/:userId/:locationId',  mid.apiAuth , function (req, res) {
-  res.send("location page");
-
-
-});
 
 
 // ---------------------------------------------
