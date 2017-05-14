@@ -135,7 +135,7 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 								});
 
 							} else if (token) {
-								if (token.userID == req.params.userID) {
+								if (token._doc._userID == req.params.userID) {
 									return res.json({
 						        success : true,
 										data : {
