@@ -124,6 +124,7 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 
 						checkToken.checkToken(req, function (err, token) {
 							if(err) {
+                console.error(err);
 								return res.status(400).json({
 									success : false,
 									errors: [
