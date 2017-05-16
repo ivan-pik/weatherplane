@@ -90,6 +90,23 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 })
 
 
+
+// ---------------------------------------------
+// Load List of places of some username
+
+// @todo: @next: Load List of places of some username
+// @todo: Also save the locations ID to user details, as that's more useful and easy
+
+router.get('/:userID/', function (req, res, next) {
+	return res.json({
+		success : true,
+		data : {
+			places: "all the places!!!"
+		}
+	});
+});
+
+
 // ---------------------------------------------
 // Load Place
 
