@@ -18,7 +18,7 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
   // All data provided
   if (req.body.placeName &&
       req.body.placeSlug &&
-      req.body.userID &&
+      req.body._userID &&
 			req.body.placeLat &&
 			req.body.placeLng &&
 			req.body.placeSettings
@@ -27,7 +27,7 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
       var PlaceData = {
 				placeName : req.body.placeName,
 				placeSlug : req.body.placeSlug,
-				userID : req.body.userID,
+				_userID : req.body._userID,
 				placeLat : req.body.placeLat,
 				placeLng : req.body.placeLng,
 				placeSettings : req.body.placeSettings

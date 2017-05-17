@@ -1,8 +1,13 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var User = require('../../users/models/user.js');
 
 var PlaceSchema = new mongoose.Schema({
+  _userID : {
+    type: String,
+    ref: 'UserSchema'
+  },
   placeName: {
     type: String,
     required: true,
@@ -13,11 +18,6 @@ var PlaceSchema = new mongoose.Schema({
 		required: true,
 		trim: true
 	},
-	userID: {
-    type: String,
-    required: true,
-    trim: true
-  },
 	placeLat: {
     type: Number,
     required: true,

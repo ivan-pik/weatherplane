@@ -16,16 +16,17 @@ function apiAuth (req, res, next) {
   // check header or url parameters or post parameters for token
   // decode token
 		// verifies secret and checks exp
-		checkToken(function (err, token) {
+		checkToken.checkToken(req, function (err, token) {
 			if (err) {
+				//@todo: nice error
 				return res.json({ success: false, message: 'Failed to authenticate token.' });
 			} else if (token) {
-				req.decoded = decoded;
-				res.header('Access-Control-Allow-Origin', '*');
-				res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
-				res.header('Access-Control-Allow-Methods', '*');
-				res.header('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
-				res.header('Access-Control-Max-Age', '1000');
+				
+				// res.header('Access-Control-Allow-Origin', '*');
+				// res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
+				// res.header('Access-Control-Allow-Methods', '*');
+				// res.header('Access-Control-Expose-Headers', 'X-Api-Version, X-Request-Id, X-Response-Time');
+				// res.header('Access-Control-Max-Age', '1000');
 				next();
 			}
 		});

@@ -1,5 +1,7 @@
 'use strict';
 
+var Place = require('../../places/models/place.js');
+
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
@@ -19,12 +21,15 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  stories : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Place' }]
 },
 {
   collection: 'users',
   versionKey: false
 });
+
+
 
 // Authenticate user
 
@@ -140,4 +145,5 @@ UserSchema.statics.updateEmail = function(authorised, userID, newEmail, callback
 
 
 var User = mongoose.model('User', UserSchema);
+
 module.exports = User;
