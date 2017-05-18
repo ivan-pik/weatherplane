@@ -27,7 +27,7 @@ router.post('/', function (req, res, next) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
 
-
+							
                 res.json(
                     {
                         success: true,

@@ -16,13 +16,12 @@ var envSettings = require('../envSettings.json');
 
 
 router.post('/', function (req, res, next) {
-  console.log("Authentication is happening");
-  console.log(req.body);
   if (req.body.userID && req.body.password) {
     User.authenticate(req.body.userID, req.body.password, function (error, user) {
       // if user is not found or password is wrong
+
       if (error || !user) {
-        console.log("yahhooo");
+				console.log("OMG");
         res.status(401).json(
           {
             errors : [{
@@ -33,8 +32,6 @@ router.post('/', function (req, res, next) {
         );
       // if user is found and password is right
       } else {
-
-
 
         // create a token
         var token = jwt.sign(user, envSettings.secret, {

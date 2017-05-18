@@ -21,7 +21,7 @@ function apiAuth (req, res, next) {
 				//@todo: nice error
 				return res.json({ success: false, message: 'Failed to authenticate token.' });
 			} else if (token) {
-				
+
 				// res.header('Access-Control-Allow-Origin', '*');
 				// res.header('Access-Control-Allow-Headers', 'Origin, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-Response-Time, X-PINGOTHER, X-CSRF-Token,Authorization');
 				// res.header('Access-Control-Allow-Methods', '*');
@@ -35,6 +35,31 @@ function apiAuth (req, res, next) {
 }
 
 
+
+
+// ---------------------------------------------
+// API token auth
+
+
+function apiAuthV2 (req, res, next) {
+
+  // check header or url parameters or post parameters for token
+  // decode token
+		// verifies secret and checks exp
+		checkToken.checkToken(req, function (err, token) {
+
+			if (err) {
+				req.authenticated = false;
+				next();
+			} else if (token) {
+				req.authenticated = true;
+				req.token = token;
+				next();
+			}
+		});
+
+
+}
 
 
 
@@ -113,3 +138,4 @@ module.exports.loggedOut = loggedOut;
 module.exports.requiresLogin = requiresLogin;
 module.exports.needsLogin = needsLogin;
 module.exports.apiAuth = apiAuth;
+module.exports.apiAuthV2 = apiAuthV2;

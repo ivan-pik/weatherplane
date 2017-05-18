@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var User = require('../../users/models/user.js');
 
+
 var PlaceSchema = new mongoose.Schema({
   _userID : {
     type: String,
@@ -56,6 +57,33 @@ PlaceSchema.statics.findByUserAndSlug = function(placeQuery, callback) {
       }
     })
 }
+
+PlaceSchema.statics.findByOID = function(placeOID, callback) {
+  Place.findById(placeOID)
+    .exec(function (error, place) {
+      if(error) {
+        return callback(error);
+      } else {
+        return callback(null, place);
+      }
+    })
+}
+
+PlaceSchema.statics.findByOIDs = function(placeOIDs, callback) {
+  Place.find({
+    '_id': { $in: placeOIDs}})
+    .exec(function (error, places) {
+      if(error) {
+        return callback(error);
+      } else {
+        return callback(null, places);
+      }
+    })
+}
+
+
+
+
 
 
 var Place = mongoose.model('Place', PlaceSchema);

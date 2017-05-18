@@ -12,6 +12,7 @@ var UserSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+	updated: { type: Date, default: Date.now },
   email: {
     type: String,
     unique: true,
@@ -22,7 +23,10 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  stories : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Place' }]
+	locations: {
+		type: Array,
+		required: false
+	}
 },
 {
   collection: 'users',
@@ -34,19 +38,26 @@ var UserSchema = new mongoose.Schema({
 // Authenticate user
 
 UserSchema.statics.authenticate = function(userID, password, callback) {
+
   User.findOne({_userID: userID})
     .exec(function (error, user) {
       if(error) {
+
         return callback(error);
       } else if (!user) {
+
         var err = new Error('User not found');
         err.status = '401';
         return callback(err);
       }
+
       bcrypt.compare(password, user.password, function (error, result) {
+				console.log(password, user)
         if (result == true) {
+
           return callback(null, user);
         } else {
+
           return callback();
         }
       })
@@ -118,6 +129,23 @@ UserSchema.statics.updatePassword = function(userID, newPassword, callback) {
       if (err) return callback(err);
 
       user.password = newPassword;
+      user.save(function (err, updatedUser) {
+        if (err) return callback(err);
+        return callback(null, updatedUser);
+      });
+    });
+
+
+};
+
+
+// Add Location Reference to "locations" collection
+
+UserSchema.statics.addLocationRef = function(userID, newLocationRef, callback) {
+    User.findOne({_userID: userID}, function (err, user) {
+      if (err) return callback(err);
+
+      user.locations.push(newLocationRef);
       user.save(function (err, updatedUser) {
         if (err) return callback(err);
         return callback(null, updatedUser);

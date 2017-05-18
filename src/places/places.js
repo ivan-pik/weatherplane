@@ -6,6 +6,7 @@
 var express = require('express');
 var router = express.Router();
 var Place = require('./models/place.js');
+var User = require('../users/models/user.js');
 var userMid = require('../users/middleware/users.js');
 var checkToken = require('../users/checkToken.js');
 
@@ -67,10 +68,17 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
               return next(error);
           }
         } else {
-          res.status(201).location(req.app.locals.siteURL + 'places/' + req.body.userID + '/' + req.body.placeSlug).json( {
-            "success" : true,
-						"message" : "The place was saved"
-          } );
+
+					User.addLocationRef(req.body._userID, place._id, function (error, user) {
+						if (error) {
+							console.error(error);
+						} else if (user) {
+							res.status(201).location(req.app.locals.siteURL + 'places/' + req.body.userID + '/' + req.body.placeSlug).json( {
+		            "success" : true,
+								"message" : "The place was saved"
+		          } );
+						}
+					});
         }
       })
   // -----------------------------
@@ -94,14 +102,43 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 // ---------------------------------------------
 // Load List of places of some username
 
-// @todo: @next: Load List of places of some username
-// @todo: Also save the locations ID to user details, as that's more useful and easy
 
-router.get('/:userID/', function (req, res, next) {
-	return res.json({
-		success : true,
-		data : {
-			places: "all the places!!!"
+router.get('/:userID/', userMid.apiAuthV2, function (req, res, next) {
+	User.findByUserID(req.params.userID, function (error, user) {
+		if (error) {
+			// @todo: error
+		} else {
+			var places = user.locations;
+
+			Place.findByOIDs(places, function(error,places) {
+				if (error) {
+					// @todo: error
+				} else {
+					var returnedPlaces = [];
+
+
+
+					if ( req.token && req.token._doc._userID == req.params.userID ) {
+						req.authorised = true;
+					}
+
+					if (req.authenticated && req.authorised) {
+						returnedPlaces = places;
+					} else {
+						returnedPlaces = places.filter(function(item)
+						{
+							return item.placeSettings.public;
+						});
+					}
+
+					return res.json({
+						success : true,
+						data : {
+							places: returnedPlaces
+						}
+					});
+				}
+			})
 		}
 	});
 });
