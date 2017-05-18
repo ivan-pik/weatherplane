@@ -82,7 +82,7 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
     errors.push({
       code: "missing-data",
       title: "Not all required data were provided",
-      description: "Required fields are: \'placeSlug\', \'userID\', \'placeLat\', \'placeLng\', \'placeSettings\'."
+      description: "Required fields are: \'placeSlug\', \'_userID\', \'placeLat\', \'placeLng\', \'placeSettings\'."
     });
 
     res.status(400).json( { errors: errors } );
@@ -118,7 +118,7 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 		Place.findByUserAndSlug(
 			{
 				placeSlug: req.params.placeSlug,
-				userID: req.params.userID
+				_userID: req.params.userID
 			}
 			, function (error, place) {
 		    if (error) {
