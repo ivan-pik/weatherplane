@@ -100,17 +100,21 @@ UserSchema.statics.findByEmail = function(email, callback) {
 
 // Hash password before saving them to DB
 UserSchema.pre('save', function(next) {
-  var user = this;
 
-	if (user.isModified('password')) {
-		console.log("pass mod")
-	  bcrypt.hash(user.password, 10, function (err, hash) {
+  // @todo: hash the password
+  var newPassword;
+
+
+	if (this.isModified('password')) {
+	  bcrypt.hash(this.password, 10, function (err, hash) {
 	    if (err) {
 	      return next(err);
 	    }
-	    user.password = hash;
-	    next();
-	  })
+	    newPassword = hash;
+	  });
+    // this.password = newPassword;
+    console.log(newPassword);
+    next();
 	}
 
 	next();

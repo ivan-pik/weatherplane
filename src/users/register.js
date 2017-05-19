@@ -15,7 +15,8 @@ router.post('/', function (req, res, next) {
   // @todo: Only allow a-z, 0-9,"_", "-", "." in userID
   // @todo: Add server side e-mail validation
 
-  console.log(req.body);
+
+
 
   // -----------------------------
   // All data provided
@@ -30,6 +31,7 @@ router.post('/', function (req, res, next) {
       };
 
       User.create(UserData, function (error, user) {
+        
         if (error) {
           let errors = [];
           errors.push({
