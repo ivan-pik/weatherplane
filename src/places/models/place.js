@@ -4,6 +4,25 @@ var mongoose = require('mongoose');
 var User = require('../../users/models/user.js');
 
 
+
+
+
+
+var WeatherSchema = new mongoose.Schema({
+  updated: { type: Date, default: Date.now },
+	current: {
+    time: { type: Date },
+		
+  },
+},
+{
+  collection: 'weather',
+  versionKey: false
+});
+
+
+
+
 var PlaceSchema = new mongoose.Schema({
   _userID : {
     type: String,
@@ -33,11 +52,16 @@ var PlaceSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
+	weather: WeatherSchema
 },
 {
   collection: 'places',
   versionKey: false
 });
+
+
+
+
 
 
 PlaceSchema.statics.findByUserAndSlug = function(placeQuery, callback) {
