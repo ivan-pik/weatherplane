@@ -7,6 +7,7 @@ var express = require('express');
 var router = express.Router();
 var Place = require('./models/place.js');
 var User = require('../users/models/user.js');
+var Weather = require('../weather/models/weather.js');
 var userMid = require('../users/middleware/users.js');
 var checkToken = require('../users/checkToken.js');
 
@@ -73,10 +74,45 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 						if (error) {
 							console.error(error);
 						} else if (user) {
-							res.status(201).location(req.app.locals.siteURL + 'places/' + req.body.userID + '/' + req.body.placeSlug).json( {
-		            "success" : true,
-								"message" : "The place was saved"
-		          } );
+
+							// Create weather record for this place
+
+							let WeatherData = {
+								_placeId: place._id,
+								provider: 'darksky',
+								location: {
+									latitude:  place.placeLat,
+									longitude: place.placeLng
+								}
+							}
+
+							Weather.create(WeatherData, function (error, weather) {
+								if (error) {
+									// @todo: handle error
+									return res.status(400).json( {
+										sucess: false
+									} );
+								} else {
+									// weather record was created
+
+									// Add weather ref
+									Place.addWeatherRef(place._id ,weather._id, function (error, place) {
+										if (error) {
+											console.error(error);
+										} else if (place) {
+											// Weather ref created
+											res.status(201).location(req.app.locals.siteURL + 'places/' + req.body.userID + '/' + req.body.placeSlug).json( {
+						            "success" : true,
+												"message" : "The place was saved"
+						          } );
+
+										}
+									});
+
+
+
+								}
+							});
 						}
 					});
         }

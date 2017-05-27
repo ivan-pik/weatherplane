@@ -60,6 +60,7 @@ app.use('/identify', require('./users/identify'))
 app.use('/register', require('./users/register'))
 app.use('/settings', require('./users/settings'))
 app.use('/places', require('./places/places'))
+app.use('/weather', require('./weather/weather'))
 
 app.use('/login', require('./users/login'))
 

@@ -6,23 +6,6 @@ var User = require('../../users/models/user.js');
 
 
 
-
-
-var WeatherSchema = new mongoose.Schema({
-  updated: { type: Date, default: Date.now },
-	current: {
-    time: { type: Date },
-		
-  },
-},
-{
-  collection: 'weather',
-  versionKey: false
-});
-
-
-
-
 var PlaceSchema = new mongoose.Schema({
   _userID : {
     type: String,
@@ -52,7 +35,10 @@ var PlaceSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
-	weather: WeatherSchema
+	weather: {
+		type: Array,
+		required: false
+	}
 },
 {
   collection: 'places',
@@ -93,6 +79,29 @@ PlaceSchema.statics.findByOID = function(placeOID, callback) {
     })
 }
 
+
+
+PlaceSchema.statics.getCoordinates = function(placeOID, callback) {
+  Place.findById(placeOID)
+    .exec(function (error, place) {
+      if(error) {
+        return callback(error);
+      } else {
+
+				let placeCoordinates = {
+					latitude: place.placeLat,
+					longitude: place.placeLng
+				}
+        return callback(null, placeCoordinates);
+      }
+    })
+}
+
+
+
+
+
+
 PlaceSchema.statics.findByOIDs = function(placeOIDs, callback) {
   Place.find({
     '_id': { $in: placeOIDs}})
@@ -105,6 +114,28 @@ PlaceSchema.statics.findByOIDs = function(placeOIDs, callback) {
     })
 }
 
+
+// Add Location Reference to "locations" collection
+
+PlaceSchema.statics.addWeatherRef = function(placeOID, newWeatherID, callback) {
+	Place.findById(placeOID)
+	.exec(function (error, place) {
+		if (error) {
+			return callback(error);
+		} else {
+			place.weather.push(
+				{
+					provider: 'darksky',
+					oid: newWeatherID
+				}
+			);
+			place.save(function (err, updatedPlace) {
+				if (err) return callback(err);
+				return callback(null, updatedPlace);
+			});
+		}
+	});
+}
 
 
 
