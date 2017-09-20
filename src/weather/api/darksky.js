@@ -6,12 +6,7 @@ var PARAMS = "?exclude=[minutely,alerts,flags]&extend=hourly&units=si";
 
 var URL = "https://api.darksky.net/forecast/" + envSettings.weatherAPIkeys.darksky + '/';
 
-// getWeather
 
-// query = {
-// 	latitude:
-// 	longitude:
-// }
 
 const fetchWeather = function(query) {
 	return new Promise(function (resolve, reject) {
@@ -22,6 +17,8 @@ const fetchWeather = function(query) {
 
 		HTTP.get(URL + coordinates + PARAMS)
 			.then(function (response){
+
+
 
 				let info = {
 					timezone: response.data.timezone,
@@ -38,6 +35,7 @@ const fetchWeather = function(query) {
 					apparentTemperature: response.data.currently.apparentTemperature,
 					humidity: response.data.currently.humidity,
 					windSpeed: response.data.currently.windSpeed,
+					windGust: response.data.currently.windGust,
 					windBearing: response.data.currently.windBearing,
 					visibility: response.data.currently.visibility,
 					cloudCover: response.data.currently.cloudCover
@@ -120,6 +118,7 @@ const normaliseHourly = function (hourly) {
 			apparentTemperature: hour.apparentTemperature,
 			humidity: hour.humidity,
 			windSpeed: hour.windSpeed,
+			windGust: hour.windGust,
 			windBearing: hour.windBearing,
 			visibility: hour.visibility,
 			cloudCover: hour.cloudCover,

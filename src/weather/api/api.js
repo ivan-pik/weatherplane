@@ -1,13 +1,7 @@
 'use strict';
 var darksky = require('./darksky.js');
 
-// getWeather
 
-// query = {
-// 	provider: Weather API service
-// 	latitude:
-// 	longitude:
-// }
 
 const getWeather = function(query) {
 	
