@@ -3,7 +3,6 @@ var jwt = require('jsonwebtoken');
 var envSettings = require('../envSettings.json');
 
 const checkToken = function(req, callback) {
-	console.log(req.headers);
 	var token = req.body.token || req.query.token || req.headers.authorization;
 
 	if (token) {

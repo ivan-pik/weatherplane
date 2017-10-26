@@ -21,7 +21,6 @@ router.post('/', function (req, res, next) {
       // if user is not found or password is wrong
 
       if (error || !user) {
-				console.log("OMG");
         res.status(401).json(
           {
             errors : [{
@@ -35,7 +34,7 @@ router.post('/', function (req, res, next) {
 
         // create a token
         var token = jwt.sign(user, envSettings.secret, {
-          expiresIn : 1440 // expires in 24 hours
+          expiresIn : "1 day" // expires in 24 hours
         });
 
          res.json(

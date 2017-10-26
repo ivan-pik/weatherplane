@@ -195,7 +195,6 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 			}
 			, function (error, place) {
 				if (error) {
-					console.log(error);
 					return res.status(404).json({
 
 								success : false,
@@ -261,7 +260,87 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 			});
 })
 
+// ---------------------------------------------
+// Update Weather Limits Settings
 
+router.post('/:userID/:placeSlug/update-limits', function (req, res, next) {
+	Place.findByUserAndSlug(
+		{
+			placeSlug: req.params.placeSlug,
+			_userID: req.params.userID
+		},
+		function (error, place) {
+			if (error) {
+				return res.status(404).json({
+					success : false,
+					errors: [
+						{
+							title : "This resouce does not exist",
+							code : "resource-does-not-exist"
+						}
+					]
+				});
+			} else {
+				checkToken.checkToken(req, function (err, token) {
+					if(err) {
+						console.error(err);
+						return res.status(400).json({
+							success : false,
+							errors: [
+								{
+									title : "Authentication is required to get this resource",
+									code : "authentication-required"
+								}
+							]
+						});
+					} else if (token) {
+						if (token._doc._userID == req.params.userID) {
+
+							Place.updateWeatherLimitsSettings(
+								place._id, 
+								{
+									maxWindBearingToRWY: req.body.maxWindBearingToRWY, 
+									maxPrecipProbability: req.body.maxPrecipProbability, 
+									maxTemperature: req.body.maxTemperature, 
+									minTemperature: req.body.minTemperature, 
+									maxCrossWindSpeed: req.body.maxCrossWindSpeed, 
+									maxWindSpeed: req.body.maxWindSpeed 
+									
+								},
+								function (error, place) {
+									if (error) {
+
+									} else {
+										return res.json({
+											success : true,
+											data : {
+												place
+											}
+										});
+									}
+								}
+							);
+
+						
+						} else {
+							//@todo: nice error
+							return res.status(400).json({
+								success : false,
+								message: "Not allowed mate",
+								errors: [
+									{
+										title : "Authorised but accessing other user resources",
+										code : "authorised-no-rights"
+									}
+								]
+							});
+						}
+					}
+				});
+
+			}
+		});
+})
 
 
 

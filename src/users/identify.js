@@ -15,7 +15,6 @@ var envSettings = require('../envSettings.json');
 
 
 router.post('/', function (req, res, next) {
-	console.log("Identify")
     // check header or url parameters or post parameters for token
     var token = req.body.token || req.query.token || req.headers.authorization;
     // decode token

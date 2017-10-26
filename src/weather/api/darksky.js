@@ -85,8 +85,8 @@ const normaliseIcon = function (icon) {
 			return 'cloudy'
 		case 'partly-cloudy-day':
 			return 'partly-cloudy-day'
-		case 'artly-cloudy-night':
-			return 'artly-cloudy-night'
+		case 'partly-cloudy-night':
+			return 'partly-cloudy-night'
 		default:
 			return 'not-available'
 	}

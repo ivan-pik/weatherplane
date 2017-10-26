@@ -1,48 +1,49 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var _ = require('underscore');
 var User = require('../../users/models/user.js');
 
 
 
 
 var PlaceSchema = new mongoose.Schema({
-  _userID : {
-    type: String,
-    ref: 'UserSchema'
-  },
-  placeName: {
-    type: String,
-    required: true,
-    trim: true
-  },
+	_userID : {
+		type: String,
+		ref: 'UserSchema'
+	},
+	placeName: {
+		type: String,
+		required: true,
+		trim: true
+	},
 	placeSlug: {
 		type: String,
 		required: true,
 		trim: true
 	},
 	placeLat: {
-    type: Number,
-    required: true,
-    trim: true
-  },
+		type: Number,
+		required: true,
+		trim: true
+	},
 	placeLng: {
-    type: Number,
-    required: true,
-    trim: true
-  },
+		type: Number,
+		required: true,
+		trim: true
+	},
 	placeSettings: {
-    type: Object,
-    required: true,
-  },
+		type: Object,
+		required: true,
+	},
 	weather: {
 		type: Array,
 		required: false
 	}
 },
 {
-  collection: 'places',
-  versionKey: false
+	collection: 'places',
+	versionKey: false
 });
 
 
@@ -51,50 +52,50 @@ var PlaceSchema = new mongoose.Schema({
 
 
 PlaceSchema.statics.findByUserAndSlug = function(placeQuery, callback) {
-  Place.findOne({
+	Place.findOne({
 		placeSlug: placeQuery.placeSlug,
 		userID: placeQuery.userID
 	})
-    .exec(function (error, place) {
-      if(error) {
-        return callback(error);
-      } else if (!place) {
-        var err = new Error('Place not found');
-        err.status = '401';
-        return callback(err);
-      } else {
-        return callback(null, place);
-      }
-    })
+		.exec(function (error, place) {
+			if(error) {
+				return callback(error);
+			} else if (!place) {
+				var err = new Error('Place not found');
+				err.status = '401';
+				return callback(err);
+			} else {
+				return callback(null, place);
+			}
+		})
 }
 
 PlaceSchema.statics.findByOID = function(placeOID, callback) {
-  Place.findById(placeOID)
-    .exec(function (error, place) {
-      if(error) {
-        return callback(error);
-      } else {
-        return callback(null, place);
-      }
-    })
+	Place.findById(placeOID)
+		.exec(function (error, place) {
+			if(error) {
+				return callback(error);
+			} else {
+				return callback(null, place);
+			}
+		})
 }
 
 
 
 PlaceSchema.statics.getCoordinates = function(placeOID, callback) {
-  Place.findById(placeOID)
-    .exec(function (error, place) {
-      if(error) {
-        return callback(error);
-      } else {
+	Place.findById(placeOID)
+		.exec(function (error, place) {
+			if(error) {
+				return callback(error);
+			} else {
 
 				let placeCoordinates = {
 					latitude: place.placeLat,
 					longitude: place.placeLng
 				}
-        return callback(null, placeCoordinates);
-      }
-    })
+				return callback(null, placeCoordinates);
+			}
+		})
 }
 
 
@@ -103,15 +104,15 @@ PlaceSchema.statics.getCoordinates = function(placeOID, callback) {
 
 
 PlaceSchema.statics.findByOIDs = function(placeOIDs, callback) {
-  Place.find({
-    '_id': { $in: placeOIDs}})
-    .exec(function (error, places) {
-      if(error) {
-        return callback(error);
-      } else {
-        return callback(null, places);
-      }
-    })
+	Place.find({
+		'_id': { $in: placeOIDs}})
+		.exec(function (error, places) {
+			if(error) {
+				return callback(error);
+			} else {
+				return callback(null, places);
+			}
+		})
 }
 
 
@@ -136,6 +137,56 @@ PlaceSchema.statics.addWeatherRef = function(placeOID, newWeatherID, callback) {
 		}
 	});
 }
+
+PlaceSchema.statics.xxxupdateWeatherLimitsSettings = function(placeOID, newWeatherLimitsSettings, callback) {
+	Place.findById(placeOID)
+	.exec(function (error, place) {
+		if (error) {
+			return callback(error);
+		} else {
+
+			_.extend(place.placeSettings, newWeatherLimitsSettings);
+
+			console.log("-----");
+			console.log(place.placeSettings);
+			console.log("-----");
+
+			place.set(place.placeSettings,newWeatherLimitsSettings);
+
+			place.save(function (err, updatedPlace) {
+				if (err) return callback(err);
+				return callback(null, updatedPlace);
+			});
+		}
+	});
+}
+
+PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherLimitsSettings, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+
+			// @todo: I don't know how to save more params, shrug...
+
+			_.extend(place.placeSettings, newWeatherLimitsSettings);
+
+			// place.placeSettings = {test : "test"};
+
+			console.log(place.placeSettings);
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+
+		}
+	});
+}
+
+
 
 
 

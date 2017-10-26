@@ -24,7 +24,6 @@ router.get('/change-email', mid.needsLogin, function (req, res) {
   User.findByUserID(req.session.userSlug, function (error, user) {
     if (error || !user) {
       // @todo handle error
-      console.log(error);
     } else {
       let templateData = {
         user: {

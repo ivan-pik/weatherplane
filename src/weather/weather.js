@@ -22,8 +22,6 @@ router.get('/:weatherID/', function (req, res, next) {
 
 	Weather.getWeather(req.params.weatherID, function (error, weather) {
 			if (error) {
-				console.log("error");
-				console.log(error);
 				return res.status(400).json({
 					success : false,
 					message: "Did not find requested weather data",

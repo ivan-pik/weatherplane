@@ -198,7 +198,6 @@ router.post('/reset-password',  function (req, res) {
             User.updatePassword(req.body.userID, req.body.password, function (error, user) {
                 if (error) {
                     // @todo handle error
-                    // console.log(error)
 
 
                 } else {

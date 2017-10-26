@@ -48,7 +48,6 @@ function sendLostPassword (content, req, callback) {
   // @todo add link with token allowing password change
   // @todo better copy
 
-    console.log(req.app.locals);
 
   var text = 'Required password reset for ' + content._userID + 'You can set a new password within 1 hour at ' + req.app.locals.siteURL + 'reset-password?token=' + content.token + '&userID=' + content._userID;
   // @todo better copy, probably show full link as well in case mail client fails to make a HTML link
