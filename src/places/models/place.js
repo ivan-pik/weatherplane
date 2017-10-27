@@ -167,11 +167,10 @@ PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherL
 			return callback(error);
 		} else {
 
-			// @todo: I don't know how to save more params, shrug...
-
-			_.extend(place.placeSettings, newWeatherLimitsSettings);
-
-			// place.placeSettings = {test : "test"};
+			// @todo: this is bad, I didn't realise you have to replace the whole object, I need to write some nested schema
+			newWeatherLimitsSettings.public = place.placeSettings.public;
+			newWeatherLimitsSettings.runwayOrientation = place.placeSettings.runwayOrientation;
+			place.placeSettings = newWeatherLimitsSettings;
 
 			console.log(place.placeSettings);
 
