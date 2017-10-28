@@ -261,7 +261,7 @@ router.get('/:userID/:placeSlug/', function (req, res, next) {
 })
 
 // ---------------------------------------------
-// Update Weather Limits Settings
+// Update Place Settings
 
 router.post('/:userID/:placeSlug/update-limits', function (req, res, next) {
 	Place.findByUserAndSlug(
@@ -341,6 +341,13 @@ router.post('/:userID/:placeSlug/update-limits', function (req, res, next) {
 			}
 		});
 })
+
+
+
+
+
+
+
 
 
 

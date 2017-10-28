@@ -180,10 +180,10 @@ PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherL
 				}
 				callback(null,place);
 			});
-
 		}
 	});
 }
+
 
 
 
