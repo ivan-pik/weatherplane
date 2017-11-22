@@ -119,6 +119,22 @@ PlaceSchema.statics.findByOIDs = function(placeOIDs, callback) {
 		})
 }
 
+// Get all user's places
+
+PlaceSchema.statics.getAllUserPlaces = function(userID, callback) {
+	Place.find({
+		'_userID': userID
+	}).exec(function (error, places) {
+		
+		if(error) {
+			return callback(error);
+		} else {
+			return callback(null, places);
+		}
+	})
+}
+
+
 
 // Add Location Reference to "locations" collection
 
