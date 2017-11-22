@@ -11,6 +11,35 @@ var Weather = require('../weather/models/weather.js');
 var userMid = require('../users/middleware/users.js');
 var checkToken = require('../users/checkToken.js');
 
+
+// ---------------------------------------------
+// Get the highest order index
+// It should normally be the number of items, but this is just in case numbers are skipped
+function getHighestListOrderIndex(userId) {
+	return new Promise(function (resolve, reject) {
+		Place.getAllUserPlaces(userId, function (error, places) {
+			let highestOrder = 0;
+			if (error) {
+				console.error(error);
+			} else if (places) {
+				if (places.length > 0) {
+					places.forEach(function(place) {
+						if (!place.listOrder) {
+							highestOrder = 0;
+						} else {
+							highestOrder = Math.max(place.listOrder, highestOrder);
+						}
+					});
+				} else {
+					highestOrder = -1;
+				}
+				resolve(highestOrder);
+			} 
+		});
+	});
+}
+
+
 // ---------------------------------------------
 // Save Place
 
@@ -26,14 +55,19 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 			req.body.placeSettings
 	) {
 
+		getHighestListOrderIndex(req.body._userID)
+		.then((order) => {
 			var PlaceData = {
 				placeName : req.body.placeName,
 				placeSlug : req.body.placeSlug,
 				_userID : req.body._userID,
 				placeLat : req.body.placeLat,
 				placeLng : req.body.placeLng,
-				placeSettings : req.body.placeSettings
+				placeSettings : req.body.placeSettings,
+				listOrder : order + 1
 			};
+
+
 
 			Place.create(PlaceData, function (error, place) {
 				if (error) {
@@ -105,18 +139,16 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 												"success" : true,
 												"message" : "The place was saved"
 											} );
-
 										}
 									});
-
-
-
 								}
 							});
 						}
 					});
 				}
-			})
+			});
+		});
+		
 	// -----------------------------
 	// Some data is missing
 	} else {
@@ -152,20 +184,26 @@ router.get('/:userID/', userMid.apiAuthV2, function (req, res, next) {
 				} else {
 					var returnedPlaces = [];
 
-
-
 					if ( req.token && req.token._doc._userID == req.params.userID ) {
 						req.authorised = true;
 					}
 
+					// Return all public and private places
 					if (req.authenticated && req.authorised) {
 						returnedPlaces = places;
-					} else {
-						returnedPlaces = places.filter(function(item)
-						{
+					}
+					// Return public places
+					else {
+						returnedPlaces = places.filter(function(item) {
 							return item.placeSettings.public;
 						});
 					}
+
+					// Sort places by 'listOrder'
+					returnedPlaces.sort(function(placeA, placeB) {
+						return (placeA.listOrder > placeB.listOrder)
+					});
+
 
 					return res.json({
 						success : true,
