@@ -39,6 +39,10 @@ var PlaceSchema = new mongoose.Schema({
 	weather: {
 		type: Array,
 		required: false
+	},
+	listOrder: {
+		type: Number,
+		required: true
 	}
 },
 {
