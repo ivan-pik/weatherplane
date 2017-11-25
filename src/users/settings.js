@@ -139,32 +139,6 @@ router.post('/change-password', mid.needsLogin, function (req, res) {
 
 
 
-// ---------------------------------------------
-// Settings "/settings/reorder-places"
-
-router.post('/reorder-places', mid.apiAuth, function (req, res) {
-
-	if (req.body && req.body.length > 1) {
-
-
-		return res.json({
-			success : true
-		});
-
-		User.reorderPlaces(req, function (error, user) {
-			if (error) {
-				// @todo handle error
-			} else {
-				
-			}
-		});
-
-	} else {
-		// @todo: incomplete data error
-	}
-
-});
-
 
 
 
