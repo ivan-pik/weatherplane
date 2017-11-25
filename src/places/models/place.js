@@ -158,28 +158,6 @@ PlaceSchema.statics.addWeatherRef = function(placeOID, newWeatherID, callback) {
 	});
 }
 
-PlaceSchema.statics.xxxupdateWeatherLimitsSettings = function(placeOID, newWeatherLimitsSettings, callback) {
-	Place.findById(placeOID)
-	.exec(function (error, place) {
-		if (error) {
-			return callback(error);
-		} else {
-
-			_.extend(place.placeSettings, newWeatherLimitsSettings);
-
-			console.log("-----");
-			console.log(place.placeSettings);
-			console.log("-----");
-
-			place.set(place.placeSettings,newWeatherLimitsSettings);
-
-			place.save(function (err, updatedPlace) {
-				if (err) return callback(err);
-				return callback(null, updatedPlace);
-			});
-		}
-	});
-}
 
 PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherLimitsSettings, callback) {
 	Place.findById(placeOID, (error,place) => {
@@ -204,6 +182,45 @@ PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherL
 	});
 }
 
+
+
+// Reorder Places
+
+PlaceSchema.statics.reorderPlaces = function(userID, newPlaces, callback) {
+	
+	let placesOIDs = newPlaces.map(function (place) {
+		return place._id;
+	});
+
+	Place.findByOIDs(placesOIDs, (error, places) => {
+		if (places.length > 1) {
+			let setNewListOrder = function (id, newPlaces) {
+				let newIndex;
+				newPlaces.forEach(function(newPlace) {
+					if (newPlace._id == id.toString()) {
+						return newIndex = newPlace.listOrder;
+					}
+				});
+				return newIndex;
+			}		
+
+			places.forEach(function (place) {
+				place.listOrder = setNewListOrder(place._id, newPlaces);
+
+				place.save(function (err, updatedPlace) {
+					if (err) {
+						return callback(err);
+					}
+				});
+			});
+
+			return callback(null, places);
+
+		} else {
+			// @todo: error
+		}
+	})
+};
 
 
 

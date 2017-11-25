@@ -173,11 +173,6 @@ UserSchema.statics.updateEmail = function(authorised, userID, newEmail, callback
 };
 
 
-// Reorder Places
-
-UserSchema.statics.reorderPlaces = function(userID, newPlaces) {
-  // @todo: change order of users places
-};
 
 
 var User = mongoose.model('User', UserSchema);

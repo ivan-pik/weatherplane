@@ -383,10 +383,26 @@ router.post('/:userID/:placeSlug/update-limits', function (req, res, next) {
 
 
 
+// ---------------------------------------------
+// Settings "/places/reorder-places"
 
+router.post('/reorder-places', userMid.apiAuth, function (req, res) {
 
-
-
+	if (req.body && req.body.length > 1) {
+		// @todo: pass active user ID
+		Place.reorderPlaces('ivanpik' ,req.body, function (error, places) {
+			if (error) {
+				// @todo handle error
+			} else {
+				return res.json({
+					success : true
+				});
+			}
+		});
+	} else {
+		// @todo: incomplete data error
+	}
+});
 
 
 // ---------------------------------------------
