@@ -1,0 +1,50 @@
+'use strict';
+
+// ---------------------------------------------
+// Modules
+
+var express = require('express');
+var router = express.Router();
+var TemporaryWeather = require('./models/temporaryWeather.js');
+
+// @todo: move to settings
+const DEFAULT_WEATHER_PROVIDER = "darksky";
+
+
+
+// ---------------------------------------------
+//
+
+router.get('/', function (req, res, next) {
+
+	if (req.query && req.query.lat &&  req.query.lng) {
+		TemporaryWeather.getTemporaryWeather(req.query.lat, req.query.lng, function (error, weather) {
+			if (error) {
+				// @todo: Handle the error
+			}
+
+			if (weather) {
+				res.json({
+					success: true,
+					message: 'Enjoy the weather',
+					data: {
+						weather : weather
+					}
+				});
+			}
+
+			
+
+		});
+	} else {
+		// @todo: return error, missing query
+	}
+
+});
+
+
+
+// ---------------------------------------------
+// Module exports
+
+module.exports = router
