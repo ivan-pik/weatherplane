@@ -18,7 +18,7 @@ const fetchWeather = function(query) {
 		HTTP.get(URL + coordinates + PARAMS)
 			.then(function (response){
 
-
+				
 
 				let info = {
 					timezone: response.data.timezone,

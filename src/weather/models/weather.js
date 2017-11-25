@@ -24,10 +24,10 @@ const hasLocationChanged = function(latitude, longitude, placeID) {
 
 var WeatherSchema = new mongoose.Schema({
 	_placeId: {
-    type: String,
-    required: true,
-    trim: true
-  },
+		type: String,
+		required: true,
+		trim: true
+	},
 	provider: {
 		type: String,
 		required: true,
@@ -44,25 +44,24 @@ var WeatherSchema = new mongoose.Schema({
 	info: {type: Object}
 },
 {
-  collection: 'weather',
-  versionKey: false
+	collection: 'weather',
+	versionKey: false
 });
-
 
 
 
 // This will get locally saved weather or fetch a new one if too old
 
 WeatherSchema.statics.getWeather = function(weatherID, callback) {
-  Weather.findById(weatherID)
-    .exec(function (error, weather) {
-      if(error) {
-        return callback(error, null);
-      } else if (!weather) {
-        var err = new Error('Place not found');
-        err.status = '401';
-        return callback(err);
-      }
+	Weather.findById(weatherID)
+		.exec(function (error, weather) {
+			if(error) {
+				return callback(error, null);
+			} else if (!weather) {
+				var err = new Error('Place not found');
+				err.status = '401';
+				return callback(err);
+			}
 			else {
 				let fetchNewWeather = false;
 				// @todo: move to settings
@@ -107,22 +106,22 @@ WeatherSchema.statics.getWeather = function(weatherID, callback) {
 
 
 
-      }
-    })
+			}
+		})
 }
 
 // This will update weather doc with the newest weather data from weather API
 
 WeatherSchema.statics.updateWeather = function(weatherID, callback) {
-  Weather.findById(weatherID)
-    .exec(function (error, weather) {
-      if(error) {
-        return callback(error, null);
-      } else if (!weather) {
-        var err = new Error('Weateher not found');
-        err.status = '401';
-        return callback(err);
-      }
+	Weather.findById(weatherID)
+		.exec(function (error, weather) {
+			if(error) {
+				return callback(error, null);
+			} else if (!weather) {
+				var err = new Error('Weateher not found');
+				err.status = '401';
+				return callback(err);
+			}
 			else {
 				let weatherQuery = {
 					provider: weather.provider,
@@ -150,20 +149,20 @@ WeatherSchema.statics.updateWeather = function(weatherID, callback) {
 									weather.info = newWeather.info;
 									weather.updated = new Date;
 
-						      weather.save(function (err, updatedWeather) {
-						        if (err) return callback(err);
-						        return callback(null, updatedWeather);
-						      });
+									weather.save(function (err, updatedWeather) {
+										if (err) return callback(err);
+										return callback(null, updatedWeather);
+									});
 								}
 							);
 					}
 				);
-      }
-    })
+			}
+		})
 }
 
 
-
 var Weather = mongoose.model('Weather', WeatherSchema);
+
 
 module.exports = Weather;

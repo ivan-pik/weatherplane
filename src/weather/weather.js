@@ -7,6 +7,7 @@ var express = require('express');
 var router = express.Router();
 var Weather = require('./models/weather.js');
 
+
 // @todo: move to settings
 const DEFAULT_WEATHER_PROVIDER = "darksky";
 
