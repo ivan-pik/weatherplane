@@ -319,6 +319,7 @@ router.post('/:userID/:placeSlug/update-limits', function (req, res, next) {
 					]
 				});
 			} else {
+				// @todo: why am I not using apiauth middleware here?? I forgot, check it, clean it
 				checkToken.checkToken(req, function (err, token) {
 					if(err) {
 						console.error(err);
@@ -399,6 +400,229 @@ router.post('/reorder-places', userMid.apiAuth, function (req, res) {
 				});
 			}
 		});
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+
+
+// ---------------------------------------------
+// Settings "/places/update-name"
+
+router.post('/update-name', userMid.apiAuth, function (req, res) {
+
+	if (req.body && req.body.placeName && req.body.userID) {
+
+		var query = {
+			placeName: req.body.placeName,
+			placeOID: req.body.placeOID,
+			userID: req.body.userID
+		}
+
+		// Check if it exists already
+		Place.findByUserAndName(query, function (error, places) {
+
+			if (error) {
+				if (error.status == '404') {
+
+					// Place with this name doesn't exists, we can update the name
+
+					Place.updateName(req.body.placeOID,req.body.placeName, function (error, place) {
+						if (place) {
+							return res.json({
+								success : true,
+								data : {
+									place: place
+								}
+							});
+						} else {
+							// @todo: return error, failed to rename
+						}
+					})
+
+				} else {
+					// @todo: return error
+					
+				}
+
+			} else {
+				return res.status(400).json({
+					success : false,
+					message: "Place with this name already exists",
+					errors: [
+						{
+							title : "Place with this name already exists",
+							code : "place-name-already-exists"
+						}
+					]
+				});
+			}
+		});
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+
+
+
+// ---------------------------------------------
+// Settings "/places/update-slug"
+
+router.post('/update-slug', userMid.apiAuth, function (req, res) {
+
+	if (req.body && req.body.placeSlug && req.body.userID) {
+
+		var query = {
+			placeSlug: req.body.placeSlug,
+			userID: req.body.userID
+		}
+
+		
+
+		// Check if it exists already
+		Place.findByUserAndSlug(query, function (error, places) {
+			
+			if (error) {
+				if (error.status == '404') {
+
+					// Place with this name doesn't exists, we can update the name
+
+					Place.updateSlug(req.body.placeOID,req.body.placeSlug, function (error, place) {
+						if (place) {
+							return res.json({
+								success : true,
+								data : {
+									place: place
+								}
+							});
+						} else {
+							// @todo: return error, failed to rename
+						}
+					})
+
+				} else {
+					// @todo: return error
+					
+				}
+
+			} else {
+				return res.status(400).json({
+					success : false,
+					message: "Place with this URL already exists",
+					errors: [
+						{
+							title : "Place with this URL already exists",
+							code : "place-url-already-exists"
+						}
+					]
+				});
+			}
+		});
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+
+
+
+// ---------------------------------------------
+// Settings "/places/update-privacy"
+
+router.post('/update-privacy', userMid.apiAuth, function (req, res) {
+	if (req.body && (typeof req.body.placePrivacy == "boolean" ) && req.body.userID) {
+
+		Place.updatePrivacy(req.body.placeOID,req.body.placePrivacy, function (error, place) {
+			if (place) {
+				return res.json({
+					success : true,
+					data : {
+						place: place
+					}
+				});
+			} else {
+				// @todo: return error, failed to rename
+			}
+		})
+
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+// ---------------------------------------------
+// Settings "/places/update-coordinates"
+
+router.post('/update-coordinates', userMid.apiAuth, function (req, res) {
+	if (req.body && req.body.coordinates && req.body.userID) {
+
+		Place.updateCoordinates(req.body.placeOID,req.body.coordinates, function (error, place) {
+			if (place) {
+				return res.json({
+					success : true,
+					data : {
+						place: place
+					}
+				});
+			} else {
+				// @todo: return error, failed to rename
+			}
+		})
+
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+// ---------------------------------------------
+// Settings "/places/update-bearing"
+
+router.post('/update-bearing', userMid.apiAuth, function (req, res) {
+	if (req.body && req.body.bearing && req.body.userID) {
+
+		Place.updateBearing(req.body.placeOID,req.body.bearing, function (error, place) {
+			if (place) {
+				return res.json({
+					success : true,
+					data : {
+						place: place
+					}
+				});
+			} else {
+				// @todo: return error, failed to rename
+			}
+		})
+
+	} else {
+		// @todo: incomplete data error
+	}
+});
+
+// ---------------------------------------------
+// Settings "/places/delete"
+
+router.post('/delete', userMid.apiAuth, function (req, res) {
+	if (req.body && req.body.placeOID) {
+
+		Place.delete(req.body.placeOID, function (error, place) {
+			if (place) {
+
+				// @todo: Delete  weather doc
+				// @todo: Delete  delete weather ref from user
+
+				return res.json({
+					success : true,
+					data : {
+						place: place
+					}
+				});
+			} else {
+				// @todo: return error, failed to rename
+			}
+		})
+
 	} else {
 		// @todo: incomplete data error
 	}

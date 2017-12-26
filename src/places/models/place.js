@@ -65,7 +65,27 @@ PlaceSchema.statics.findByUserAndSlug = function(placeQuery, callback) {
 				return callback(error);
 			} else if (!place) {
 				var err = new Error('Place not found');
-				err.status = '401';
+				err.status = '404';
+				return callback(err);
+			} else {
+				return callback(null, place);
+			}
+		})
+}
+
+PlaceSchema.statics.findByUserAndName = function(placeQuery, callback) {
+	
+	Place.findOne({
+		placeName: placeQuery.placeName,
+		_userID: placeQuery.userID
+	})
+		.exec(function (error, place) {
+
+			if(error) {
+				return callback(error);
+			} else if (!place) {
+				var err = new Error('Place not found');
+				err.status = '404';
 				return callback(err);
 			} else {
 				return callback(null, place);
@@ -182,6 +202,130 @@ PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherL
 	});
 }
 
+// Update place name
+
+PlaceSchema.statics.updateName = function(placeOID, newName, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+			place.placeName = newName;
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+		}
+	});
+}
+
+
+// Update place name
+
+PlaceSchema.statics.updateSlug = function(placeOID, newSlug, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+			place.placeSlug = newSlug;
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+		}
+	});
+}
+
+
+
+// Update place privacy
+
+PlaceSchema.statics.updatePrivacy = function(placeOID, newPrivacy, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+			var newPlaceSettings = JSON.parse(JSON.stringify(place.placeSettings));
+			newPlaceSettings.public = newPrivacy;
+
+			place.placeSettings = newPlaceSettings;
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+		}
+	});
+}
+
+// Update place coordinates
+
+PlaceSchema.statics.updateCoordinates = function(placeOID, newCoordinates, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+			
+
+			place.placeLat = newCoordinates.lat;
+			place.placeLng = newCoordinates.lng;
+
+			// @todo: do I need to update weather doc?
+
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+		}
+	});
+}
+
+
+// Update place bearing
+
+PlaceSchema.statics.updateBearing = function(placeOID, newBearing, callback) {
+	Place.findById(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+
+			var settings = JSON.parse(JSON.stringify(place.placeSettings));
+			settings.runwayOrientation = parseFloat(newBearing);
+
+			place.placeSettings = settings;
+
+			place.save((error, place) => {
+				if (error) {
+					callback(error);
+				}
+				callback(null,place);
+			});
+		}
+	});
+}
+
+
+// Update place bearing
+
+PlaceSchema.statics.delete = function(placeOID, callback) {
+	Place.findByIdAndRemove(placeOID, (error,place) => {
+		if (error) {
+			return callback(error);
+		} else {
+			return callback(null,place);
+		}
+	});
+}
 
 
 // Reorder Places
