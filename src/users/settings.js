@@ -10,84 +10,42 @@ var mid = require('./middleware/users');
 
 
 // ---------------------------------------------
-// Views
-// ---------------------------------------------
-
-
-
-// ---------------------------------------------
 // Settings "/settings/change-email"
 // @todo: Rewrite to JSON API
 
-router.get('/change-email', mid.needsLogin, function (req, res) {
-
-	User.findByUserID(req.session.userSlug, function (error, user) {
-		if (error || !user) {
-			// @todo handle error
-		} else {
-			let templateData = {
-				user: {
-					email: user.email
-				}
-			};
-			return res.render('users/change-email', templateData);
-		}
-	});
-
-});
-
-// ---------------------------------------------
-// Settings "/settings/change-email"
-// @todo: Rewrite to JSON API
-
-router.post('/change-email', mid.needsLogin, function (req, res) {
+router.post('/change-email', mid.apiAuthV2, function (req, res) {
 
 	if (req.body.email) {
 		// @todo validation of propper email format
-		User.updateEmail(true, req.session.userId, req.body.email, function (error, user) {
+		User.updateEmail(req.body.userID, req.body.email, function (error, user) {
 			if (error) {
+				res.json(error);
 				// @todo handle error
 			} else {
-				let templateData = {
-					message: {
-						type: 'success',
-						text: "Email has been changed"
-					}
-				}
-				// @todo implement flash message with success message
-				res.redirect('/settings');
+				return res.json({
+					success : true,
+				});
 			}
 		});
 
 	} else {
-		var templateData = {
-			message: {
-				type: 'warning',
-				text: "All fields need to be filled"
-			}
-		}
-		res.render('users/settings/change-password', templateData);
+		// @todo: send missing data error
 	}
 
 });
 
 
-// ---------------------------------------------
-// Settings "/settings/update-password"
-// @todo: Rewrite to JSON API
 
-router.get('/change-password', mid.needsLogin, function (req, res) {
-	res.render('users/change-password');
-});
+
 
 // ---------------------------------------------
 // Settings "/settings/change-email"
 // @todo: Rewrite to JSON API
 
-router.post('/change-password', mid.needsLogin, function (req, res) {
-
-	if (req.body.password && req.body.newPassword && req.body.confirmPassword) {
-		User.authenticate(req.session.userSlug, req.body.password, function (error, user) {
+router.post('/change-password', mid.apiAuthV2, function (req, res) {
+	if (req.body.password && req.body.newPassword) {
+		
+		User.authenticate(req.token._doc._userID, req.body.password, function (error, user) {
 			if (error || !user) {
 				var templateData = {
 					message: {
@@ -98,30 +56,16 @@ router.post('/change-password', mid.needsLogin, function (req, res) {
 				res.render('users/change-password', templateData);
 			} else {
 
-				if (req.body.newPassword == req.body.confirmPassword) {
-					User.updatePassword(true, req.session.userId, req.body.newPassword, function (error, user) {
-						if (error) {
-							// @todo handle error
-						} else {
-							let templateData = {
-								message: {
-									type: 'success',
-									text: "Password has been changed"
-								}
-							}
-							// @todo implement flash message with success message
-							res.redirect('/settings');
-						}
-					});
-				} else {
-					var templateData = {
-						message: {
-							type: 'danger',
-							text: "New passwords don\'t match"
-						}
+				User.updatePassword(req.token._doc._userID, req.body.newPassword, function (error, user) {
+					if (error) {
+						// @todo handle error
+						debugger;
+					} else {
+						return res.json({
+							success : true,
+						});
 					}
-					res.render('users/change-password', templateData);
-				}
+				});
 			}
 		});
 
