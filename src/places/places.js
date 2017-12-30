@@ -103,7 +103,7 @@ router.post('/', userMid.apiAuth , function (req, res, next) {
 							return next(error);
 					}
 				} else {
-
+					// @todo: Do I need this?
 					User.addLocationRef(req.body._userID, place._id, function (error, user) {
 						if (error) {
 							console.error(error);

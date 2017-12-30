@@ -26,12 +26,50 @@ var UserSchema = new mongoose.Schema({
 	locations: {
 		type: Array,
 		required: false
-	}
+	},
+	dateFormat: {
+		type: String,
+		required: false
+	},
+	windUnit: {
+		type: String,
+		required: false
+	},
+	timeFormat: {
+		type: String,
+		required: false
+	},
+	temperatureUnit: {
+		type: String,
+		required: false
+	},
 },
 {
 	collection: 'users',
 	versionKey: false
 });
+
+
+
+// Get public settings
+
+UserSchema.statics.getPublicSettings = function(userID, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+
+		var publicSettings =  {
+			dateFormat: user.dateFormat,
+			temperatureUnit: user.temperatureUnit,
+			timeFormat: user.timeFormat,
+			windUnit: user.windUnit
+		}
+
+		return callback(null, publicSettings);
+
+	
+	});
+};
+
 
 
 
@@ -148,11 +186,59 @@ UserSchema.statics.addLocationRef = function(userID, newLocationRef, callback) {
 
 
 // Update password
-// Never call this without authorising first!
 UserSchema.statics.updateEmail = function(userID, newEmail, callback) {
 	User.findOne({_userID: userID}, function (err, user) {
 		if (err) return callback(err);
 		user.email = newEmail;
+		user.save(function (err, user) {
+			if (err) return handleError(err);
+			return callback(null, user);
+		});
+	});
+};
+
+// Update date format
+UserSchema.statics.updateDateFormat = function(userID, newDateFormat, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+		user.dateFormat = newDateFormat;
+		user.save(function (err, user) {
+			if (err) return handleError(err);
+			return callback(null, user);
+		});
+	});
+};
+
+// Update wind unit
+UserSchema.statics.updateWindUnit = function(userID, newWindUnit, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+		user.windUnit = newWindUnit;
+		user.save(function (err, user) {
+			if (err) return handleError(err);
+			return callback(null, user);
+		});
+	});
+};
+
+// Update time format
+UserSchema.statics.updateTimeFormat = function(userID, newTimeFormat, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+		user.timeFormat = newTimeFormat;
+		user.save(function (err, user) {
+			if (err) return handleError(err);
+			return callback(null, user);
+		});
+	});
+};
+
+
+// Update temperature unit
+UserSchema.statics.updateTemperatureUnit = function(userID, newTemperatureUnit, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+		user.temperatureUnit = newTemperatureUnit;
 		user.save(function (err, user) {
 			if (err) return handleError(err);
 			return callback(null, user);
