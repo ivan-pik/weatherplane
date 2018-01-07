@@ -50,6 +50,7 @@ router.post('/', function (req, res, next) {
   // Some data not provided
   } else {
     // @todo I could let Mongoose model to generate all those errors?
+    // @todo: don't use mysterious error codes
     let errors = [{
       code : "A01",
       title : "Missing \'userID\' and/or \'password\'"
