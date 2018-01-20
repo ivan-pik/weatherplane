@@ -43,6 +43,10 @@ var UserSchema = new mongoose.Schema({
 		type: String,
 		required: false
 	},
+	weatherRange: {
+		type: Number,
+		required: false
+	}
 },
 {
 	collection: 'users',
@@ -61,7 +65,8 @@ UserSchema.statics.getPublicSettings = function(userID, callback) {
 			dateFormat: user.dateFormat,
 			temperatureUnit: user.temperatureUnit,
 			timeFormat: user.timeFormat,
-			windUnit: user.windUnit
+			windUnit: user.windUnit,
+			weatherRange: user.weatherRange
 		}
 
 		return callback(null, publicSettings);
@@ -239,6 +244,19 @@ UserSchema.statics.updateTemperatureUnit = function(userID, newTemperatureUnit, 
 	User.findOne({_userID: userID}, function (err, user) {
 		if (err) return callback(err);
 		user.temperatureUnit = newTemperatureUnit;
+		user.save(function (err, user) {
+			if (err) return handleError(err);
+			return callback(null, user);
+		});
+	});
+};
+
+// Update Weather Range
+UserSchema.statics.updateWeatherRange = function(userID, newWeatherRange, callback) {
+	User.findOne({_userID: userID}, function (err, user) {
+		if (err) return callback(err);
+
+		user.weatherRange = newWeatherRange;
 		user.save(function (err, user) {
 			if (err) return handleError(err);
 			return callback(null, user);

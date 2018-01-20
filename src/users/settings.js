@@ -56,6 +56,30 @@ router.post('/change-email', mid.apiAuthV2, function (req, res) {
 
 });
 
+// ---------------------------------------------
+// Settings "/settings/update-weather-range"
+
+router.post('/update-weather-range', mid.apiAuthV2, function (req, res) {
+
+	if (req.body.weatherRange) {
+		// @todo validation of propper email format
+		User.updateWeatherRange(req.body.userID, req.body.weatherRange, function (error, user) {
+			if (error) {
+				res.json(error);
+				// @todo handle error
+			} else {
+				return res.json({
+					success : true,
+				});
+			}
+		});
+
+	} else {
+		// @todo: send missing data error
+	}
+
+});
+
 
 // ---------------------------------------------
 // Settings "/settings/change-date-format"
