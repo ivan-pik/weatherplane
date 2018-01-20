@@ -16,9 +16,12 @@ const DEFAULT_WEATHER_PROVIDER = "darksky";
 //
 
 router.get('/', function (req, res, next) {
+	
+	let range = req.query.range || 3;
 
 	if (req.query && req.query.lat &&  req.query.lng) {
-		TemporaryWeather.getTemporaryWeather(req.query.lat, req.query.lng, function (error, weather) {
+		TemporaryWeather.getTemporaryWeather(req.query.lat, req.query.lng, range, function (error, weather) {
+			
 			if (error) {
 				// @todo: Handle the error
 			}
