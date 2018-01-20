@@ -19,7 +19,13 @@ const hasLocationChanged = function(latitude, longitude, placeID) {
 	});
 }
 
-
+// Weather: Array, Range - Integer n of days
+const applyRange = function (weather, range) {
+	let end = range * 24;
+	let reducedHours = weather._doc.hourly.slice(0, end);
+	weather._doc.hourly = reducedHours;
+	return weather;
+}
 
 
 var WeatherSchema = new mongoose.Schema({
@@ -52,7 +58,7 @@ var WeatherSchema = new mongoose.Schema({
 
 // This will get locally saved weather or fetch a new one if too old
 
-WeatherSchema.statics.getWeather = function(weatherID, callback) {
+WeatherSchema.statics.getWeather = function(weatherID, range, callback) {
 	Weather.findById(weatherID)
 		.exec(function (error, weather) {
 			if(error) {
@@ -94,12 +100,16 @@ WeatherSchema.statics.getWeather = function(weatherID, callback) {
 								if (error) {
 									return callback(error);
 								}
-								return callback(null, newWeather);
+
+								let returnedWeather = applyRange(newWeather, range);
+
+								return callback(null, returnedWeather);
 							});
 
 
 						} else {
-							return callback(null, weather);
+							let returnedWeather = applyRange(weather, range);
+							return callback(null, returnedWeather);
 						}
 					}
 				);

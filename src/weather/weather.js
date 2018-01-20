@@ -16,12 +16,13 @@ const DEFAULT_WEATHER_PROVIDER = "darksky";
 // ---------------------------------------------
 //
 
-router.get('/:weatherID/', function (req, res, next) {
+router.get('/:weatherID/:days/', function (req, res, next) {
 
 	// Look up the weather record for given placeID and provider paremeter
 
+	let range = req.params.days || 3;
 
-	Weather.getWeather(req.params.weatherID, function (error, weather) {
+	Weather.getWeather(req.params.weatherID, range , function (error, weather) {
 			if (error) {
 				return res.status(400).json({
 					success : false,
