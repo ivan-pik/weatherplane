@@ -27,8 +27,14 @@ router.post('/', function (req, res, next) {
 			var UserData = {
 				_userID: req.body.userID,
 				email: req.body.email,
-				password: req.body.password
+				password: req.body.password,
+				windUnit : req.body.windUnit,
+				timeFormat : req.body.timeFormat,
+				temperatureUnit : req.body.temperatureUnit,
+				weatherRange : req.body.weatherRange,
 			};
+
+			
 
 			User.create(UserData, function (error, user) {
 				
@@ -68,13 +74,12 @@ router.post('/', function (req, res, next) {
 					// send confirm mail
 					mailer.sendRegistrationConfirmation(req);
 
-					res.status(201).location(req.app.locals.siteURL + 'users/' + req.body.userID).json( {
-						"success" : true,
-						"data" : {
-							"userID" : req.body.userID,
-							"email" : req.body.email
+					res.json(
+						{
+							success: true,
+							message: 'New user created',
 						}
-					} );
+					);
 				}
 			})
 	// -----------------------------
