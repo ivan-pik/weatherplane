@@ -27,10 +27,6 @@ var UserSchema = new mongoose.Schema({
 		type: Array,
 		required: false
 	},
-	dateFormat: {
-		type: String,
-		required: false
-	},
 	windUnit: {
 		type: String,
 		required: false
@@ -161,7 +157,6 @@ UserSchema.pre('save', function(next) {
 
 
 // Update password
-// Never call this without authorising first!
 UserSchema.statics.updatePassword = function(userID, newPassword, callback) {
 		User.findOne({_userID: userID}, function (err, user) {
 			if (err) return callback(err);
@@ -190,7 +185,7 @@ UserSchema.statics.addLocationRef = function(userID, newLocationRef, callback) {
 };
 
 
-// Update password
+// Update email
 UserSchema.statics.updateEmail = function(userID, newEmail, callback) {
 	User.findOne({_userID: userID}, function (err, user) {
 		if (err) return callback(err);
