@@ -204,19 +204,25 @@ PlaceSchema.statics.updateWeatherLimitsSettings = function(placeOID, newWeatherL
 
 // Update place name
 
-PlaceSchema.statics.updateName = function(placeOID, newName, callback) {
+PlaceSchema.statics.updateName = function(placeOID, newName, userID, callback) {
 	Place.findById(placeOID, (error,place) => {
 		if (error) {
 			return callback(error);
 		} else {
-			place.placeName = newName;
+			// Authorisation Check
+			if (place._doc._userID !== userID) {
+				var unauthorisedError = new Error('Not authorised');
+				callback(unauthorisedError, null);
+			} else {
+				place.placeName = newName;
 
-			place.save((error, place) => {
-				if (error) {
-					callback(error);
-				}
-				callback(null,place);
-			});
+				place.save((error, place) => {
+					if (error) {
+						callback(error);
+					}
+					callback(null,place);
+				});
+			}
 		}
 	});
 }
@@ -224,19 +230,24 @@ PlaceSchema.statics.updateName = function(placeOID, newName, callback) {
 
 // Update place name
 
-PlaceSchema.statics.updateSlug = function(placeOID, newSlug, callback) {
+PlaceSchema.statics.updateSlug = function(placeOID, newSlug, userID, callback) {
 	Place.findById(placeOID, (error,place) => {
 		if (error) {
 			return callback(error);
 		} else {
-			place.placeSlug = newSlug;
+			if (place._doc._userID !== userID) {
+				var unauthorisedError = new Error('Not authorised');
+				callback(unauthorisedError);
+			} else {
+				place.placeSlug = newSlug;
 
-			place.save((error, place) => {
-				if (error) {
-					callback(error);
-				}
-				callback(null,place);
-			});
+				place.save((error, place) => {
+					if (error) {
+						callback(error);
+					}
+					callback(null,place);
+				});
+			}
 		}
 	});
 }
@@ -245,47 +256,59 @@ PlaceSchema.statics.updateSlug = function(placeOID, newSlug, callback) {
 
 // Update place privacy
 
-PlaceSchema.statics.updatePrivacy = function(placeOID, newPrivacy, callback) {
+PlaceSchema.statics.updatePrivacy = function(placeOID, newPrivacy, userID, callback) {
 	Place.findById(placeOID, (error,place) => {
 		if (error) {
 			return callback(error);
 		} else {
-			var newPlaceSettings = JSON.parse(JSON.stringify(place.placeSettings));
-			newPlaceSettings.public = newPrivacy;
-
-			place.placeSettings = newPlaceSettings;
-
-			place.save((error, place) => {
-				if (error) {
-					callback(error);
-				}
-				callback(null,place);
-			});
+			if (place._doc._userID !== userID) {
+				var unauthorisedError = new Error('Not authorised');
+				callback(unauthorisedError);
+			} else {
+				var newPlaceSettings = JSON.parse(JSON.stringify(place.placeSettings));
+				newPlaceSettings.public = newPrivacy;
+	
+				place.placeSettings = newPlaceSettings;
+	
+				place.save((error, place) => {
+					if (error) {
+						callback(error);
+					}
+					callback(null,place);
+				});
+			}
 		}
 	});
 }
 
 // Update place coordinates
 
-PlaceSchema.statics.updateCoordinates = function(placeOID, newCoordinates, callback) {
+PlaceSchema.statics.updateCoordinates = function (
+	placeOID,
+	newCoordinates,
+	userID,
+	callback
+) {
 	Place.findById(placeOID, (error,place) => {
 		if (error) {
 			return callback(error);
 		} else {
-			
+			if (place._doc._userID !== userID) {
+				var unauthorisedError = new Error('Not authorised');
+				callback(unauthorisedError);
+			} else {
+				place.placeLat = newCoordinates.lat;
+				place.placeLng = newCoordinates.lng;
 
-			place.placeLat = newCoordinates.lat;
-			place.placeLng = newCoordinates.lng;
+				// @todo: do I need to update weather doc?
 
-			// @todo: do I need to update weather doc?
-
-
-			place.save((error, place) => {
-				if (error) {
-					callback(error);
-				}
-				callback(null,place);
-			});
+				place.save((error, place) => {
+					if (error) {
+						callback(error);
+					}
+					callback(null,place);
+				});
+			}
 		}
 	});
 }
@@ -293,23 +316,32 @@ PlaceSchema.statics.updateCoordinates = function(placeOID, newCoordinates, callb
 
 // Update place bearing
 
-PlaceSchema.statics.updateBearing = function(placeOID, newBearing, callback) {
+PlaceSchema.statics.updateBearing = function(
+	placeOID,
+	newBearing,
+	userID,
+	callback
+) {
 	Place.findById(placeOID, (error,place) => {
 		if (error) {
 			return callback(error);
 		} else {
+			if (place._doc._userID !== userID) {
+				var unauthorisedError = new Error('Not authorised');
+				callback(unauthorisedError);
+			} else {
+				var settings = JSON.parse(JSON.stringify(place.placeSettings));
+				settings.runwayOrientation = parseFloat(newBearing);
 
-			var settings = JSON.parse(JSON.stringify(place.placeSettings));
-			settings.runwayOrientation = parseFloat(newBearing);
+				place.placeSettings = settings;
 
-			place.placeSettings = settings;
-
-			place.save((error, place) => {
-				if (error) {
-					callback(error);
-				}
-				callback(null,place);
-			});
+				place.save((error, place) => {
+					if (error) {
+						callback(error);
+					}
+					callback(null,place);
+				});
+			}
 		}
 	});
 }

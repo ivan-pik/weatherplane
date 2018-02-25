@@ -410,7 +410,7 @@ router.post('/reorder-places', userMid.apiAuth, function (req, res) {
 // ---------------------------------------------
 // Settings "/places/update-name"
 
-router.post('/update-name', userMid.apiAuth, function (req, res) {
+router.post('/update-name', userMid.apiAuthV2, function (req, res) {
 
 	if (req.body && req.body.placeName && req.body.userID) {
 
@@ -428,7 +428,7 @@ router.post('/update-name', userMid.apiAuth, function (req, res) {
 
 					// Place with this name doesn't exists, we can update the name
 
-					Place.updateName(req.body.placeOID,req.body.placeName, function (error, place) {
+					Place.updateName(req.body.placeOID,req.body.placeName, req.token._doc._userID, function (error, place) {
 						if (place) {
 							return res.json({
 								success : true,
@@ -437,7 +437,20 @@ router.post('/update-name', userMid.apiAuth, function (req, res) {
 								}
 							});
 						} else {
-							// @todo: return error, failed to rename
+							if (error.message == "Not authorised") {
+								return res.status(400).json({
+									success : false,
+									message: "Not authorised",
+									errors: [
+										{
+											title : "Not authorised to edit this place",
+											code : "not-authorised-to-edit-place"
+										}
+									]
+								});
+							} else {
+								// @todo: generic error
+							}
 						}
 					})
 
@@ -470,7 +483,7 @@ router.post('/update-name', userMid.apiAuth, function (req, res) {
 // ---------------------------------------------
 // Settings "/places/update-slug"
 
-router.post('/update-slug', userMid.apiAuth, function (req, res) {
+router.post('/update-slug', userMid.apiAuthV2, function (req, res) {
 
 	if (req.body && req.body.placeSlug && req.body.userID) {
 
@@ -483,13 +496,13 @@ router.post('/update-slug', userMid.apiAuth, function (req, res) {
 
 		// Check if it exists already
 		Place.findByUserAndSlug(query, function (error, places) {
-			
+
 			if (error) {
 				if (error.status == '404') {
 
 					// Place with this name doesn't exists, we can update the name
 
-					Place.updateSlug(req.body.placeOID,req.body.placeSlug, function (error, place) {
+					Place.updateSlug(req.body.placeOID,req.body.placeSlug, req.token._doc._userID, function (error, place) {
 						if (place) {
 							return res.json({
 								success : true,
@@ -498,7 +511,20 @@ router.post('/update-slug', userMid.apiAuth, function (req, res) {
 								}
 							});
 						} else {
-							// @todo: return error, failed to rename
+							if (error.message == "Not authorised") {
+								return res.status(400).json({
+									success : false,
+									message: "Not authorised",
+									errors: [
+										{
+											title : "Not authorised to edit this place",
+											code : "not-authorised-to-edit-place"
+										}
+									]
+								});
+							} else {
+								// @todo: generic error
+							}
 						}
 					})
 
@@ -531,22 +557,39 @@ router.post('/update-slug', userMid.apiAuth, function (req, res) {
 // ---------------------------------------------
 // Settings "/places/update-privacy"
 
-router.post('/update-privacy', userMid.apiAuth, function (req, res) {
+router.post('/update-privacy', userMid.apiAuthV2, function (req, res) {
 	if (req.body && (typeof req.body.placePrivacy == "boolean" ) && req.body.userID) {
 
-		Place.updatePrivacy(req.body.placeOID,req.body.placePrivacy, function (error, place) {
-			if (place) {
-				return res.json({
-					success : true,
-					data : {
-						place: place
+		Place.updatePrivacy(
+			req.body.placeOID,
+			req.body.placePrivacy,
+			req.token._doc._userID,
+			function (error, place) {
+				if (place) {
+					return res.json({
+						success : true,
+						data : {
+							place: place
+						}
+					});
+				} else {
+					if (error.message == "Not authorised") {
+						return res.status(400).json({
+							success : false,
+							message: "Not authorised",
+							errors: [
+								{
+									title : "Not authorised to edit this place",
+									code : "not-authorised-to-edit-place"
+								}
+							]
+						});
+					} else {
+						// @todo: generic error
 					}
-				});
-			} else {
-				// @todo: return error, failed to rename
+				}
 			}
-		})
-
+		)
 	} else {
 		// @todo: incomplete data error
 	}
@@ -555,22 +598,38 @@ router.post('/update-privacy', userMid.apiAuth, function (req, res) {
 // ---------------------------------------------
 // Settings "/places/update-coordinates"
 
-router.post('/update-coordinates', userMid.apiAuth, function (req, res) {
+router.post('/update-coordinates', userMid.apiAuthV2, function (req, res) {
 	if (req.body && req.body.coordinates && req.body.userID) {
-
-		Place.updateCoordinates(req.body.placeOID,req.body.coordinates, function (error, place) {
-			if (place) {
-				return res.json({
-					success : true,
-					data : {
-						place: place
+		Place.updateCoordinates(
+			req.body.placeOID,
+			req.body.coordinates,
+			req.token._doc._userID,
+			function (error, place) {
+				if (place) {
+					return res.json({
+						success : true,
+						data : {
+							place: place
+						}
+					});
+				} else {
+					if (error.message == "Not authorised") {
+						return res.status(400).json({
+							success : false,
+							message: "Not authorised",
+							errors: [
+								{
+									title : "Not authorised to edit this place",
+									code : "not-authorised-to-edit-place"
+								}
+							]
+						});
+					} else {
+						// @todo: generic error
 					}
-				});
-			} else {
-				// @todo: return error, failed to rename
+				}
 			}
-		})
-
+		)
 	} else {
 		// @todo: incomplete data error
 	}
@@ -579,22 +638,39 @@ router.post('/update-coordinates', userMid.apiAuth, function (req, res) {
 // ---------------------------------------------
 // Settings "/places/update-bearing"
 
-router.post('/update-bearing', userMid.apiAuth, function (req, res) {
+router.post('/update-bearing', userMid.apiAuthV2, function (req, res) {
 	if (req.body && req.body.bearing && req.body.userID) {
 
-		Place.updateBearing(req.body.placeOID,req.body.bearing, function (error, place) {
-			if (place) {
-				return res.json({
-					success : true,
-					data : {
-						place: place
+		Place.updateBearing(
+			req.body.placeOID,
+			req.body.bearing,
+			req.token._doc._userID,
+			function (error, place) {
+				if (place) {
+					return res.json({
+						success : true,
+						data : {
+							place: place
+						}
+					});
+				} else {
+					if (error.message == "Not authorised") {
+						return res.status(400).json({
+							success : false,
+							message: "Not authorised",
+							errors: [
+								{
+									title : "Not authorised to edit this place",
+									code : "not-authorised-to-edit-place"
+								}
+							]
+						});
+					} else {
+						// @todo: generic error
 					}
-				});
-			} else {
-				// @todo: return error, failed to rename
+				}
 			}
-		})
-
+		)
 	} else {
 		// @todo: incomplete data error
 	}
