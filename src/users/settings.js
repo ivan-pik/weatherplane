@@ -60,54 +60,46 @@ router.post('/change-email', mid.apiAuthV2, function (req, res) {
 // Settings "/settings/update-weather-range"
 
 router.post('/update-weather-range', mid.apiAuthV2, function (req, res) {
-
-	if (req.body.weatherRange) {
-		// @todo validation of propper email format
-		User.updateWeatherRange(req.body.userID, req.body.weatherRange, function (error, user) {
-			if (error) {
-				res.json(error);
-				// @todo handle error
-			} else {
-				return res.json({
-					success : true,
-				});
-			}
-		});
-
-	} else {
-		// @todo: send missing data error
-	}
-
-});
-
-
-// ---------------------------------------------
-// Settings "/settings/change-date-format"
-
-router.post('/change-date-format', mid.apiAuthV2, function (req, res) {
-	if (req.body.dateFormat) {
-		// @todo validation of propper email format
-		User.updateDateFormat(req.token._doc._userID, req.body.dateFormat, function (error, user) {
-			if (error) {
-				res.json(error);
-				// @todo handle error
-			} else {
-				return res.json({
-					success : true,
-				});
-			}
+	// Authorisation
+	if (req.token._doc._userID !== req.body.userID) {
+		return res.status(400).json({
+			success : false,
+			message: "Not authorised",
+			errors: [
+				{
+					title : "Not authorised to edit this place",
+					code : "not-authorised-to-edit-place"
+				}
+			]
 		});
 	} else {
-		// @todo: send missing data error
+		if (req.body.weatherRange) {
+			// @todo validation of propper email format
+			User.updateWeatherRange(req.body.userID, req.body.weatherRange, function (error, user) {
+				if (error) {
+					res.json(error);
+					// @todo handle error
+				} else {
+					return res.json({
+						success : true,
+					});
+				}
+			});
+	
+		} else {
+			// @todo: send missing data error
+		}
 	}
 });
+
+
+
 
 // ---------------------------------------------
 // Settings "/settings/change-wind-unit"
 
 router.post('/change-wind-unit', mid.apiAuthV2, function (req, res) {
 	if (req.body.windUnit) {
-		// @todo validation of propper email format
 		User.updateWindUnit(req.token._doc._userID, req.body.windUnit, function (error, user) {
 			if (error) {
 				res.json(error);
@@ -174,29 +166,37 @@ router.post('/change-temperature-unit', mid.apiAuthV2, function (req, res) {
 router.post('/change-password', mid.apiAuthV2, function (req, res) {
 	if (req.body.password && req.body.newPassword) {
 		
-		User.authenticate(req.token._doc._userID, req.body.password, function (error, user) {
-			if (error || !user) {
-				var templateData = {
-					message: {
-						type: 'danger',
-						text: "Wrong current password"
+		User.authenticate(
+			req.token._doc._userID,
+			req.body.password,
+			function (error, user) {
+				if (error) {
+					if (error.message && error.message == 'passwords-dont-match') {
+						res.status(401).json(
+							{
+								errors : [
+									{
+										code : "wrong-current-password"
+									}
+								]
+							}
+						);
 					}
+					// @todo: General error
+				} else {
+					User.updatePassword(req.token._doc._userID, req.body.newPassword, function (error, user) {
+						if (error) {
+							// @todo handle error
+							debugger;
+						} else {
+							return res.json({
+								success : true,
+							});
+						}
+					});
 				}
-				res.render('users/change-password', templateData);
-			} else {
-
-				User.updatePassword(req.token._doc._userID, req.body.newPassword, function (error, user) {
-					if (error) {
-						// @todo handle error
-						debugger;
-					} else {
-						return res.json({
-							success : true,
-						});
-					}
-				});
 			}
-		});
+		);
 
 	} else {
 		var templateData = {
