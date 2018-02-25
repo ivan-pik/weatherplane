@@ -81,25 +81,20 @@ UserSchema.statics.authenticate = function(userID, password, callback) {
 	User.findOne({_userID: userID})
 		.exec(function (error, user) {
 			if(error) {
-
 				return callback(error);
-			} else if (!user) {
-
-				var err = new Error('User not found');
-				err.status = '401';
-				return callback(err);
 			}
 
-			bcrypt.compare(password, user.password, function (error, result) {
-				if (result == true) {
+			bcrypt.compare(password, user._doc.password, function (error, passwordsMatch) {
 
+				if (passwordsMatch == true) {
 					return callback(null, user);
 				} else {
-
-					return callback();
+					var passwordError = new Error('passwords-dont-match');
+					return callback(passwordError, null);
 				}
 			})
-		})
+		}
+	)
 }
 
 UserSchema.statics.findByUserID = function(userID, callback) {
