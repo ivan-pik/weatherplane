@@ -151,11 +151,10 @@ router.post('/retrieve-lost-username', function (req, res, next) {
 
 router.post('/reset-password',  function (req, res) {
 
-
 	// Check if we have all we need to go ahead
 	if(!req.body.token || !req.body.userID || !req.body.password) {
 		// @todo: return more specific errors
-		return res.status(403).send({
+		return res.json({
 			success: false,
 			message: 'Some data missing',
 			errors: [
@@ -171,7 +170,7 @@ router.post('/reset-password',  function (req, res) {
 
 		if (error) {
 			if(error.code == 'token-expired') {
-				return res.status(403).send({
+				return res.json({
 					success: false,
 					message: 'Token expired',
 					errors: [
@@ -182,7 +181,7 @@ router.post('/reset-password',  function (req, res) {
 					]
 				});
 			} else if (error.code == 'token-is-invalid') {
-				return res.status(403).send({
+				return res.json({
 					success: false,
 					message: 'Token is invalid',
 					errors: [
@@ -208,7 +207,7 @@ router.post('/reset-password',  function (req, res) {
 						} else {
 							return res.send({
 								success: true,
-								message: 'Password has been changes'
+								message: 'Password has been changed'
 							});
 						}
 					});
